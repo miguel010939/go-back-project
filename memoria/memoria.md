@@ -35,6 +35,14 @@ Los máximos de los mínimos requisitos para el software requerido.
 
 ## Arquitectura de software y sistemas
 
+```javascript
+// TODO Diagrama & Explicación de las tablas de la base de datos
+```
+
+```javascript
+// TODO Detallar endpoints del API REST
+```
+
 
 
 ## Descripción de datos
