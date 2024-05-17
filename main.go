@@ -10,7 +10,14 @@ import (
 )
 
 func main() {
-	db := db2.NewDBConnection(config.DefaultConnStr)
+	db, err1 := db2.NewDBConnection(config.DefaultConnStr)
+	if err1 != nil {
+		if config.EnforceSuccessfulDBConnection {
+			panic(err1)
+		}
+		fmt.Println(err1)
+		fmt.Println("Warning: Failed to connect to database")
+	}
 	if config.CreateTables {
 		db2.CreateTables(db)
 	}
@@ -19,8 +26,8 @@ func main() {
 	routers.Routes(r, db)
 
 	fmt.Println("Server working on port 8090...")
-	err := http.ListenAndServe(":8090", r)
-	if err != nil {
+	err2 := http.ListenAndServe(":8090", r)
+	if err2 != nil {
 		return
 	}
 

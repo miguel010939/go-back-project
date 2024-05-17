@@ -42,7 +42,10 @@ fmt.Println("i:", *ptr)     // 1
 ```
 
 > [!TIP]
->  //TODO **Automatic dereferencing**
+> ```javascript
+>//TODO **Automatic dereferencing**
+>```
+>  
 
 
 ## Builtin Data Structures
@@ -51,17 +54,83 @@ fmt.Println("i:", *ptr)     // 1
 ### Maps
 
 ## Control Flow
+Control flow in Go is quite similar to other programing languages. `Note on syntax`: parenthesis are not used around conditions
 ### Conditionals
+Standard if-else block
+```go
+if x%2 == 0 {
+	fmt.Println("x is even")
+} else {
+	fmt.Println("x is odd")
+}
+```
+In Go you can write a statement to execute right before the condition is evaluated. It would make sense if it's somehow related
+```go
+if x := math.Cos(100.1); x > 0 {
+	fmt.Println("x is positive")
+}
+```
+Switch statements work very similarly to other languages
+```go
+switch i {
+    case 1:
+        fmt.Println("one")
+    default:
+        fmt.Println("something else")
+}
+```
 ### Loops
+All loops use the keyword `for`. We can loop forever, while a condition is true, a given number of times
+or over an array, slice, etc
+```go
+// equivalent to while(true)
+for { 
+	fmt.Println("This loops forever")
+}
+// while(condition)
+for i <= 3 {
+    fmt.Println(i)
+    i = i + 1
+}
+// iteration over a slice
+numbers := []int{1, 2, 3, 4, 5}
+for i := range numbers {
+    fmt.Println("range", i)
+}
+```
 
 ## Functions
 
 ## Errors
+A salient feature of Go is that it treats errors as values instead of catching exceptions
 ### Errors as values
-### Error interface
+Functions that can *fail*, return an error type, instead of throwing an exception. If all goes well,
+the error returned will be `nil` (null), otherwise it will have some value.
 
+The compiler expects the programmer to handle error values and will protest if this is not done (at least syntactically). 
+Errors are treated like any other variable. We can use the same common control flow structures (`if`, `switch`, `for`, etc).
+
+
+### Error interface
+Errors are type error, a built-in interface that implements `Error() string`.
+This allows the programmer, among other things, to define custom error types that will, nonetheless, 
+be recognized by the compiler as errors
+```go
+type MyError struct {
+	Number  int
+}
+
+func (e *MyError) Error() string {
+	return fmt.Sprintf("Error number %d", e.Number)
+}
+```
 ## OOP? Kinda...
 ### Structs
+
+```javascript
+// TODO Public & Private fields in structs
+```
+
 ### Methods
 ### Interfaces
 
@@ -74,7 +143,13 @@ fmt.Println("i:", *ptr)     // 1
 # Standard Library
 
 ## http/net
+```javascript
+// TODO Explain the main features I use from the package
+```
+
 
 ## sql
-
+```javascript
+// TODO Explain the main features I use from the package
+```
 
