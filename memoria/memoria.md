@@ -35,6 +35,71 @@ Los máximos de los mínimos requisitos para el software requerido.
 
 ## Arquitectura de software y sistemas
 
+Diagrama Entidad-Relación
+```mermaid
+---
+title: Diagrama E-R Subastas
+---
+erDiagram
+    USUARIO }o--o{ PRODUCTO : puja por
+    USUARIO ||--|| SESION : inicia/cierra
+    USUARIO }o--o{ PRODUCTO : favorito
+    USUARIO }o--o{ USUARIO : sigue a
+
+```
+Diagrama de la Estructura de Base de Datos
+```mermaid
+---
+title: DB
+---
+classDiagram
+    Session ..> User
+    Follower ..> User
+    Product ..> User
+    Bid ..> User
+    Favorite ..> User
+    Bid ..> Product
+    Favorite ..> Product
+    class User{
+        INT id (PK)
+        VARCHAR(50) username
+        VARCHAR(256) hashedpswd
+        VARCHAR(100) email
+    }
+    class Session{
+        INT id (PK)
+        VARCHAR(32) token
+        INT user (FK)
+        TIMESTAMP time
+    }
+    class Follower{
+        INT id (PK)
+        INT usera (FK)
+        INT userb (FK)
+    }
+    class Product{
+        INT id (PK)
+        VARCHAR(50) name
+        VARCHAR(300) description
+        VARCHAR(150) imageurl
+        INT user (FK)
+    }
+    class Bid{
+        INT id (PK)
+        INT user (FK)
+        INT product (FK)
+        DECIMAL(8,2) ammount 
+        TIMESTAMP time
+    }
+    class Favorite{
+        INT id (PK)
+        INT user (FK)
+        INT product (FK)
+        
+    }
+```
+
+
 ### Estructura del Proyecto
 El proyecto está estructurado en 4 capas: el *router*, los *handlers*, los repositorios y los modelos.
 
