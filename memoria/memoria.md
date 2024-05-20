@@ -41,10 +41,10 @@ Diagrama Entidad-Relación
 title: Diagrama E-R Subastas
 ---
 erDiagram
-    USUARIO }o--o{ PRODUCTO : puja por
-    USUARIO ||--|| SESION : inicia o cierra
+    USUARIO }o--o{ PRODUCTO : puja
+    USUARIO ||--|| SESION : inicia
     USUARIO }o--o{ PRODUCTO : favorito
-    USUARIO }o--o{ USUARIO : sigue a
+    USUARIO }o--o{ USUARIO : sigue
 
 ```
 Diagrama de la Estructura de Base de Datos
