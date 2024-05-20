@@ -42,7 +42,7 @@ title: Diagrama E-R Subastas
 ---
 erDiagram
     USUARIO }o--o{ PRODUCTO : puja por
-    USUARIO ||--|| SESION : inicia/cierra
+    USUARIO ||--|| SESION : inicia o cierra
     USUARIO }o--o{ PRODUCTO : favorito
     USUARIO }o--o{ USUARIO : sigue a
 
