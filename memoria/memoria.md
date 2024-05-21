@@ -60,40 +60,40 @@ classDiagram
     Bid ..> Product
     Favorite ..> Product
     class User{
-        INT id [PK)
-        VARCHAR[50) username
-        VARCHAR[256) hashedpswd
-        VARCHAR[100) email
+        INT id [PK]
+        VARCHAR[50] username
+        VARCHAR[256] hashedpswd
+        VARCHAR[100] email
     }
     class Session{
-        INT id [PK)
-        VARCHAR[32) token
-        INT user [FK)
+        INT id [PK]
+        VARCHAR[32] token
+        INT user [FK]
         TIMESTAMP time
     }
     class Follower{
-        INT id [PK)
-        INT usera [FK)
-        INT userb [FK)
+        INT id [PK]
+        INT usera [FK]
+        INT userb [FK]
     }
     class Product{
-        INT id [PK)
-        VARCHAR[50) name
-        VARCHAR[300) description
-        VARCHAR[150) imageurl
-        INT user [FK)
+        INT id [PK]
+        VARCHAR[50] name
+        VARCHAR[300] description
+        VARCHAR[150] imageurl
+        INT user [FK]
     }
     class Bid{
-        INT id [PK)
-        INT user [FK)
-        INT product [FK)
-        DECIMAL[8,2) ammount 
+        INT id [PK]
+        INT user [FK]
+        INT product [FK]
+        DECIMAL[8,2] ammount 
         TIMESTAMP time
     }
     class Favorite{
-        INT id [PK)
-        INT user [FK)
-        INT product [FK)
+        INT id [PK]
+        INT user [FK]
+        INT product [FK]
         
     }
 ```
