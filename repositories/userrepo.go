@@ -13,6 +13,22 @@ func NewUserRepo(db *sql.DB) *UserRepo {
 	return &UserRepo{db}
 }
 
+func (r *UserRepo) UserSignUp(signUpForm *models.UserSignUpForm) (string, error) {
+	var token string
+
+	return token, nil
+}
+func (r *UserRepo) UserLogIn(signUpForm *models.UserLogInForm) (string, error) {
+	var token string
+
+	return token, nil
+}
+
+func (r *UserRepo) UserLogOut(token string) error {
+
+	return nil
+}
+
 func (r *UserRepo) GetAllUsers() ([]models.User, error) {
 	rows, err := r.db.Query("SELECT id, username FROM users")
 	if err != nil {

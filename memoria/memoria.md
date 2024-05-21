@@ -157,7 +157,9 @@ Representan en el programa objetos asociados a las tablas de base de datos.
 // TODO Detallar endpoints del API REST
 ```
 
-
+```javascript
+// TODO Explicar con algo más de detalle cómo funciona la conexión entre los routers y los handlers y entre los handlers y los repos
+```
 
 ## Descripción de datos
 
