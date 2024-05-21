@@ -41,7 +41,7 @@ title: Diagrama E-R Subastas
 ---
 erDiagram
     USUARIO }o--o{ PRODUCTO : puja
-    USUARIO ||--|| SESION : inicia
+    USUARIO ||--o| SESION : inicia
     USUARIO }o--o{ PRODUCTO : favorito
     USUARIO }o--o{ USUARIO : sigue
 
@@ -68,8 +68,8 @@ classDiagram
     class Session{
         INT id [PK]
         VARCHAR[32] token
-        INT user [FK]
-        TIMESTAMP time
+        INT userx [FK]
+        TIMESTAMP createdat
     }
     class Follower{
         INT id [PK]
@@ -78,21 +78,21 @@ classDiagram
     }
     class Product{
         INT id [PK]
-        VARCHAR[50] name
+        VARCHAR[50] namex
         VARCHAR[300] description
         VARCHAR[150] imageurl
-        INT user [FK]
+        INT userx [FK]
     }
     class Bid{
         INT id [PK]
-        INT user [FK]
+        INT userx [FK]
         INT product [FK]
-        DECIMAL[8,2] ammount 
-        TIMESTAMP time
+        DECIMAL[8,2] amount 
+        TIMESTAMP createdat
     }
     class Favorite{
         INT id [PK]
-        INT user [FK]
+        INT userx [FK]
         INT product [FK]
         
     }

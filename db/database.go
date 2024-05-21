@@ -18,5 +18,19 @@ func NewDBConnection(databaseURL string) (*sql.DB, error) {
 
 // CreateTables creates tables in the database. This is an initial set up
 func CreateTables(db *sql.DB) {
-	CreateUserTable(db)
+	execQuery(db, createTableUsers)
+	execQuery(db, createTableSessions)
+	execQuery(db, createTableFollowers)
+	execQuery(db, createTableProducts)
+	execQuery(db, createTableFavorites)
+	execQuery(db, createTableBids)
+}
+
+func DropTables(db *sql.DB) {
+	execQuery(db, deleteTableUsers)
+	execQuery(db, deleteTableSessions)
+	execQuery(db, deleteTableFollowers)
+	execQuery(db, deleteTableProducts)
+	execQuery(db, deleteTableFavorites)
+	execQuery(db, deleteTableBids)
 }

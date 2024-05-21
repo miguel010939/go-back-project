@@ -18,9 +18,8 @@ func main() {
 		fmt.Println(err1)
 		fmt.Println("Warning: Failed to connect to database")
 	}
-	if config.CreateTables {
-		db2.CreateTables(db)
-	}
+	//db2.DropTables(db)
+	//db2.CreateTables(db)
 
 	r := http.NewServeMux()
 	routers.Routes(r, db)
