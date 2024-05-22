@@ -1,9 +1,13 @@
 package repositories
 
 import (
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"errors"
 	"fmt"
+	"math/rand"
+	"time"
 )
 
 type AuthRepo struct {
@@ -47,5 +51,15 @@ func (r *AuthRepo) hasTokenAlready(userId int) bool {
 }
 
 func generateRandomToken(userIdSeed int) string {
-	return ""
+	// let me cook
+	now := time.Now()
+	number := now.Nanosecond() + rand.Intn(424242)*userIdSeed
+	stringToHash := fmt.Sprintf("Today, at time %s, a user thought of the number %d", now.String(), number)
+
+	hasher := sha256.New()
+	hasher.Write([]byte(stringToHash))
+	hashedBytes := hasher.Sum(nil)
+	hashedString := hex.EncodeToString(hashedBytes[:16])
+	// ok, never let me near the kitchen again
+	return hashedString
 }
