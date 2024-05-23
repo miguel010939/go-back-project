@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"main.go/models"
 )
 
@@ -40,10 +41,18 @@ func (r *FollowerRepo) GetUsersWhomIFollow(userId int) ([]*models.UserRepresenta
 	return followers, nil
 }
 func (r *FollowerRepo) FollowSomeone(userId int, followedUserId int) error {
+	following, err1 := r.isFollowing(userId, followedUserId)
+	if err1 != nil {
+		return SomethingWentWrong
+	}
+	if following {
+		return Conflict
+	}
+
 	insertQuery := `INSERT INTO followers (usera, userb) 
 					VALUES ($1, $2)`
-	_, err := r.db.Exec(insertQuery, userId, followedUserId)
-	if err != nil {
+	_, err2 := r.db.Exec(insertQuery, userId, followedUserId)
+	if err2 != nil {
 		return SomethingWentWrong
 	}
 	return nil
@@ -63,4 +72,16 @@ func (r *FollowerRepo) UnfollowSomeone(userId int, unfollowedUserId int) error {
 		return NotFound
 	}
 	return nil
+}
+
+func (r *FollowerRepo) isFollowing(userId int, followedUserId int) (bool, error) {
+	checkQuery := `SELECT id FROM followers WHERE usera=$1 AND userb=$2`
+	err := r.db.QueryRow(checkQuery, userId, followedUserId).Scan()
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return false, nil
+		}
+		return false, SomethingWentWrong
+	}
+	return true, nil
 }
