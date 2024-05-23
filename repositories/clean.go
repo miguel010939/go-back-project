@@ -18,49 +18,49 @@ const (
 	tokenRedFlag       RedFlag = "[^a-f0-9]"
 )
 
-func cleanUsername(username string) (string, error) {
+func CleanUsername(username string) (string, error) {
 	str, e := clean(usernameRedFlag, username)
 	if e != nil {
 		return "", e
 	}
 	return str, nil
 }
-func cleanPassword(password string) (string, error) {
+func CleanPassword(password string) (string, error) {
 	str, e := clean(passwordRedFlag, password)
 	if e != nil {
 		return "", e
 	}
 	return str, nil
 }
-func cleanEmail(email string) (string, error) {
+func CleanEmail(email string) (string, error) {
 	str, e := clean(emailRedFlag, email)
 	if e != nil {
 		return "", e
 	}
 	return str, nil
 }
-func cleanName(name string) (string, error) {
+func CleanName(name string) (string, error) {
 	str, e := clean(nameRedFlag, name)
 	if e != nil {
 		return "", e
 	}
 	return str, nil
 }
-func cleanDescription(description string) (string, error) {
+func CleanDescription(description string) (string, error) {
 	str, e := clean(descriptionRedFlag, description)
 	if e != nil {
 		return "", e
 	}
 	return str, nil
 }
-func cleanUrl(url string) (string, error) {
+func CleanUrl(url string) (string, error) {
 	str, e := clean(urlRedFlag, url)
 	if e != nil {
 		return "", e
 	}
 	return str, nil
 }
-func cleanToken(token string) (string, error) {
+func CleanToken(token string) (string, error) {
 	str, e := clean(tokenRedFlag, token)
 	if e != nil {
 		return "", e
