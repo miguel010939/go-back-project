@@ -71,6 +71,7 @@ func (r *UserRepo) UserLogOut(token string) error {
 	return nil
 }
 
+// TODO Delete this sql equivalent to Hello World
 func (r *UserRepo) GetAllUsers() ([]models.User, error) {
 	rows, err := r.db.Query("SELECT id, username FROM users")
 	if err != nil {
