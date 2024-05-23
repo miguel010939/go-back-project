@@ -14,7 +14,7 @@ func NewUserRepo(db *sql.DB) *UserRepo {
 }
 
 func (r *UserRepo) UserSignUp(signUpForm *models.UserSignUpForm, auth *AuthRepo) (string, error) {
-	if !signUpForm.IsValid() {
+	if !signUpForm.IsValiD() {
 		return "", InvalidInput
 	}
 	signUpForm.HashPwd()
@@ -35,7 +35,7 @@ func (r *UserRepo) UserSignUp(signUpForm *models.UserSignUpForm, auth *AuthRepo)
 	return token, nil
 }
 func (r *UserRepo) UserLogIn(logInForm *models.UserLogInForm, auth *AuthRepo) (string, error) {
-	if !logInForm.IsValid() {
+	if !logInForm.IsValiD() {
 		return "", InvalidInput
 	}
 	logInForm.HashPwd()
