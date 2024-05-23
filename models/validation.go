@@ -8,17 +8,17 @@ import (
 
 func (usf *UserSignUpForm) IsValiD() bool {
 	_, e1 := repositories.CleanUsername(usf.Username)
-	_, e2 := repositories.CleanPassword(usf.Password)
+	//_, e2 := repositories.CleanPassword(usf.Password)
 	_, e3 := repositories.CleanEmail(usf.Email)
-	if e1 != nil || e2 != nil || e3 != nil {
+	if e1 != nil || e3 != nil {
 		return false
 	}
 	return true
 }
 func (ulf *UserLogInForm) IsValiD() bool {
 	_, e1 := repositories.CleanUsername(ulf.Username)
-	_, e2 := repositories.CleanPassword(ulf.Password)
-	if e1 != nil || e2 != nil {
+	//_, e2 := repositories.CleanPassword(ulf.Password)
+	if e1 != nil {
 		return false
 	}
 	return true

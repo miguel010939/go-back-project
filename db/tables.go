@@ -17,14 +17,14 @@ const (
 		token VARCHAR(32) NOT NULL,
     	userx INTEGER NOT NULL,
     	createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    	FOREIGN KEY (userx) REFERENCES users(id)
+    	FOREIGN KEY (userx) REFERENCES users(id) ON DELETE CASCADE
 	)`
 	createTableFollowers = `CREATE TABLE IF NOT EXISTS followers (
 		id SERIAL PRIMARY KEY,
 		usera INTEGER NOT NULL,
 		userb INTEGER NOT NULL,
-    	FOREIGN KEY (usera) REFERENCES users(id),
-    	FOREIGN KEY (userb) REFERENCES users(id)
+    	FOREIGN KEY (usera) REFERENCES users(id) ON DELETE CASCADE,
+    	FOREIGN KEY (userb) REFERENCES users(id) ON DELETE CASCADE
 	)`
 	createTableProducts = `CREATE TABLE IF NOT EXISTS products (
 		id SERIAL PRIMARY KEY,
@@ -32,14 +32,14 @@ const (
     	description VARCHAR(300),
     	imageurl VARCHAR(150) NOT NULL,
     	userx INTEGER NOT NULL,
-    	FOREIGN KEY (userx) REFERENCES users(id)
+    	FOREIGN KEY (userx) REFERENCES users(id) ON DELETE CASCADE
 	)`
 	createTableFavorites = `CREATE TABLE IF NOT EXISTS favorites (
 		id SERIAL PRIMARY KEY,
 		userx INTEGER NOT NULL,
 		product INTEGER NOT NULL,
-		FOREIGN KEY (userx) REFERENCES users(id),
-    	FOREIGN KEY (product) REFERENCES products(id)
+		FOREIGN KEY (userx) REFERENCES users(id) ON DELETE CASCADE,
+    	FOREIGN KEY (product) REFERENCES products(id) ON DELETE CASCADE
 	)`
 	createTableBids = `CREATE TABLE IF NOT EXISTS bids (
 		id SERIAL PRIMARY KEY,
@@ -47,8 +47,8 @@ const (
 		product INTEGER NOT NULL,
 		amount DECIMAL(8,2) NOT NULL,
     	createdat TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    	FOREIGN KEY (userx) REFERENCES users(id),
-    	FOREIGN KEY (product) REFERENCES products(id)
+    	FOREIGN KEY (userx) REFERENCES users(id) ON DELETE CASCADE,
+    	FOREIGN KEY (product) REFERENCES products(id) ON DELETE CASCADE
 	)`
 )
 
