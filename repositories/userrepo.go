@@ -17,7 +17,8 @@ func (r *UserRepo) UserSignUp(signUpForm *models.UserSignUpForm, auth *AuthRepo)
 	if !signUpForm.IsValid() {
 		return "", InvalidInput
 	}
-	// TODO Hash the passwords!!! This makes CleanPassword() redundant. I don't think im gonna bother salting them tho, we'll see
+	signUpForm.HashPwd()
+	// Hash the passwords!!! This makes CleanPassword() redundant. I don't think im gonna bother salting them tho, we'll see
 	insertQuery := `INSERT INTO users (username, email, password)
 					VALUES ($1, $2, $3) 
 					RETURNING id`
@@ -37,7 +38,8 @@ func (r *UserRepo) UserLogIn(logInForm *models.UserLogInForm, auth *AuthRepo) (s
 	if !logInForm.IsValid() {
 		return "", InvalidInput
 	}
-	// TODO Hash the passwords!!! This makes CleanPassword() redundant. I don't think im gonna bother salting them tho, we'll see
+	logInForm.HashPwd()
+	// Hash the passwords!!! This makes CleanPassword() redundant. I don't think im gonna bother salting them tho, we'll see
 	selectQuery := `SELECT id FROM users 
 					WHERE username = $1 AND password = $2`
 	var id int

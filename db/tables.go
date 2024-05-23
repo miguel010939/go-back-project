@@ -9,7 +9,7 @@ const (
 	createTableUsers = `CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
 		username VARCHAR(30) NOT NULL,
-    	hashedpswd VARCHAR(256) NOT NULL,
+    	hashedpswd CHAR(64) NOT NULL,
     	email VARCHAR(100) NOT NULL UNIQUE
 	)`
 	createTableSessions = `CREATE TABLE IF NOT EXISTS sessions (

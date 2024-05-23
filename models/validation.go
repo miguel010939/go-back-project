@@ -1,6 +1,8 @@
 package models
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"main.go/repositories"
 )
 
@@ -30,4 +32,18 @@ func (pf *ProductForm) IsValid() bool {
 		return false
 	}
 	return true
+}
+
+func (ulf *UserLogInForm) HashPwd() {
+	ulf.Password = hashPassword(ulf.Password)
+}
+func (usf *UserSignUpForm) HashPwd() {
+	usf.Password = hashPassword(usf.Password)
+}
+func hashPassword(password string) string {
+	hasher := sha256.New()
+	hasher.Write([]byte(password))
+	hashedBytes := hasher.Sum(nil)               //32 byte output
+	hashedPwd := hex.EncodeToString(hashedBytes) //64 chars in hex
+	return hashedPwd
 }
