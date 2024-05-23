@@ -32,7 +32,7 @@ Constants are defined analogously, using the keyword `const`.
 ### Pointers
 The use of pointers is relatively limited, in comparison with other languages like C/C++. They are mainly used to work with references to values in functions, methods and data structures.
 
-C-like syntax: `&` returns the memory address and `*` dereferences teh pointer, returning the value at the address.
+C-like syntax: `&` returns the memory address and `*` dereferences the pointer, returning the value at the address.
 ```go
 i := 1
 ptr := &i
@@ -110,6 +110,12 @@ the error returned will be `nil` (null), otherwise it will have some value.
 The compiler expects the programmer to handle error values and will protest if this is not done (at least syntactically). 
 Errors are treated like any other variable. We can use the same common control flow structures (`if`, `switch`, `for`, etc).
 
+```go
+if err != nil { 
+	// handle the error
+}
+```
+> [!TIP] A common way to handle errors is the `if error != nil` syntax, analogous to the `try-catch` block in other languages
 
 ### Error interface
 Errors are type error, a built-in interface that implements `Error() string`.
@@ -141,6 +147,8 @@ func (e *MyError) Error() string {
 
 
 # Standard Library
+The following is a succinct summary of the features i use from the SL. Not very comprehensive,
+but it may save time.
 
 ## http/net
 ```javascript
@@ -149,7 +157,58 @@ func (e *MyError) Error() string {
 
 
 ## sql
-```javascript
-// TODO Explain the main features I use from the package
+
+### Opening and closing connection to the database
+
+The function **Open()** takes the connection info and returns a pointer to a database. 
+```go
+func Open(driverName, dataSourceName string) (*DB, error)
+```
+
+The function **Close()** does the opposite.
+```go
+func (db *DB) Close() error
+```
+
+### Insertion, update & deletion. 0 row result
+
+**Exec()** executes a DB query without returning any rows. It makes sense to use it for 
+`INSERT`, `UPDATE` and `DELETE` operations. It takes as a arguments a string representing the 
+query and any number of placeholder params
+```go
+func (db *DB) Exec(query string, args ...any) (Result, error)
+```
+
+### Select: 1 row result
+
+**QueryRow()** is used when expecting at most one row as a result. If there are more, it just
+takes the first on. If there are none...  *Row.Scan will return the error ErrNoRows when called
+```go
+func (db *DB) QueryRow(query string, args ...any) *Row
+```
+
+The **Scan()** function is also used to retrieve the data.
+
+### Select: n rows result
+
+**Query()** executes a query that returns rows, typically a `SELECT`. 
+The args are for any placeholder parameters in the query
+```go
+func (db *DB) Query(query string, args ...any) (*Rows, error)
+```
+
+**Next()** prepares the next result row for reading with the Rows.Scan method. 
+It returns true on success, or false if there is no next result row or an 
+error happened while preparing it. It's used when iterating over a result 
+with many (i.e. >1) rows.
+```go
+func (rs *Rows) Next() bool
+```
+
+**Rows.Scan()** copies the columns in the row into the values pointed at by *dest*
+ (the reference &x is passed, the value is copied to x). 
+The number of values in dest must be the same as the number of columns in Rows.
+```go
+func (rs *Rows) Scan(dest ...any) error
 ```
 
