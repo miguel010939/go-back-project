@@ -10,7 +10,8 @@ const (
 	NotFound           relatedError = http.StatusNotFound
 	Conflict           relatedError = http.StatusConflict
 	NoPermission       relatedError = http.StatusUnauthorized
-	SomethingWentWrong relatedError = http.StatusBadGateway
+	SomethingWentWrong relatedError = http.StatusInternalServerError
+	InvalidInput       relatedError = http.StatusBadRequest
 )
 
 func (err relatedError) Error() string {

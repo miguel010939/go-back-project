@@ -20,7 +20,10 @@ func NewAuthRepo(db *sql.DB) *AuthRepo {
 
 func (r *AuthRepo) GetID(token string) (int, error) {
 	var id int
-	// TODO clean token string
+	token, err1 := CleanToken(token)
+	if err1 != nil {
+		return -1, InvalidInput
+	}
 	query := fmt.Sprintf("SELECT userx FROM sessions WHERE token='%s'", token)
 	row := r.db.QueryRow(query)
 	err := row.Scan(&id)
@@ -31,9 +34,9 @@ func (r *AuthRepo) GetID(token string) (int, error) {
 }
 func (r *AuthRepo) GetToken(userId int) (string, error) {
 	if r.hasTokenAlready(userId) {
-		return "", errors.New("409") //TODO error 409
+		return "", Conflict
 	}
-	var token = generateRandomToken(userId)
+	var token = generateRandomToken(userId) // TODO maybe i could check they dont repeat.. but i mean... 2^-128 aprox 10^-39 prob
 	_, err := r.db.Exec("INSERT INTO sessions (userx, token) VALUES ($1, $2)", userId, token)
 	if err != nil {
 		return "", err
