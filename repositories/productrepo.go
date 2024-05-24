@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"main.go/models"
 )
 
@@ -14,12 +15,47 @@ func NewProductRepo(db *sql.DB) *ProductRepo {
 }
 
 func (r *ProductRepo) GetProductById(id int) (*models.ProductRepresentation, error) {
-
-	return nil, nil
+	var product models.ProductRepresentation
+	selectQuery := `SELECT id, name, description, imageurl, userx 
+					FROM products WHERE id = $1`
+	row := r.db.QueryRow(selectQuery, id)
+	err := row.Scan(&product.ID, &product.Name, &product.Description, &product.ImageUrl, &product.UserID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, NotFound
+		}
+		return nil, SomethingWentWrong
+	}
+	return &product, nil
 }
-func (r *ProductRepo) GetProducts(sellingUserId int, limit int, offset int) ([]*models.ProductRepresentation, error) {
 
-	return nil, nil
+// TODO MAKE THE ARGUMENTS OPTIONAL, in this repo method and others similar
+func (r *ProductRepo) GetProducts(sellingUserId int, limit int, offset int) ([]*models.ProductRepresentation, error) {
+	selectQuery := `SELECT id, name, description, imageurl, userx 
+					FROM products WHERE userx = $1
+					ORDER BY name LIMIT $2 OFFSET $3`
+	rows, err := r.db.Query(selectQuery, sellingUserId, limit, offset)
+	if err != nil {
+		return nil, SomethingWentWrong
+	}
+	defer rows.Close()
+
+	var products []*models.ProductRepresentation
+	for rows.Next() {
+		var product models.ProductRepresentation
+		err2 := rows.Scan(&product.ID, &product.Name, &product.Description, &product.ImageUrl, &product.UserID)
+		if err2 != nil {
+			return nil, SomethingWentWrong
+		}
+		products = append(products, &product)
+	}
+	if err3 := rows.Err(); err3 != nil {
+		return nil, SomethingWentWrong
+	}
+	if len(products) == 0 {
+		return nil, Empty
+	}
+	return products, nil
 }
 func (r *ProductRepo) SaveProduct(userId int, product *models.ProductForm) (int, error) {
 	if !product.IsValiD() {
