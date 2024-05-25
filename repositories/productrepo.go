@@ -3,6 +3,7 @@ package repositories
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"main.go/models"
 )
 
@@ -16,7 +17,7 @@ func NewProductRepo(db *sql.DB) *ProductRepo {
 
 func (r *ProductRepo) GetProductById(id int) (*models.ProductRepresentation, error) {
 	var product models.ProductRepresentation
-	selectQuery := `SELECT id, name, description, imageurl, userx 
+	selectQuery := `SELECT id, namex, description, imageurl, userx 
 					FROM products WHERE id = $1`
 	row := r.db.QueryRow(selectQuery, id)
 	err := row.Scan(&product.ID, &product.Name, &product.Description, &product.ImageUrl, &product.UserID)
@@ -29,12 +30,15 @@ func (r *ProductRepo) GetProductById(id int) (*models.ProductRepresentation, err
 	return &product, nil
 }
 
-// TODO MAKE THE ARGUMENTS OPTIONAL, in this repo method and others similar
 func (r *ProductRepo) GetProducts(sellingUserId int, limit int, offset int) ([]*models.ProductRepresentation, error) {
-	selectQuery := `SELECT id, name, description, imageurl, userx 
-					FROM products WHERE userx = $1
-					ORDER BY name LIMIT $2 OFFSET $3`
-	rows, err := r.db.Query(selectQuery, sellingUserId, limit, offset)
+	var arg1, arg2, arg3 any
+	var userIdNumber, limitNumber, offsetNumber = Number(sellingUserId), Number(limit), Number(offset)
+	piles := NewPairOfRelatedPiles([]any{arg1, arg2, arg3}, []optional{userIdNumber, limitNumber, offsetNumber})
+	piles.MakeAssociation()
+
+	selectQuery := customGetProductsQuery(sellingUserId, limit, offset)
+	// Query ignores extra args
+	rows, err := r.db.Query(selectQuery, piles.args[0], piles.args[1], piles.args[2])
 	if err != nil {
 		return nil, SomethingWentWrong
 	}
@@ -87,4 +91,60 @@ func (r *ProductRepo) DeleteProduct(id int, deletingUserId int) error { //TODO r
 		return NotFound
 	}
 	return nil
+}
+
+func customGetProductsQuery(sellingUserId int, limit int, offset int) string {
+	var stringUserId, stringLimit, stringOffset string // if a string is not initialized, its value is ""
+	query := "SELECT id, namex, description, imageurl, userx FROM products %sORDER BY name%s%s"
+	if sellingUserId >= 0 {
+		stringUserId = "WHERE userx = $1 "
+	}
+	if limit >= 0 {
+		stringLimit = " LIMIT $2"
+	}
+	if offset >= 0 {
+		stringOffset = " OFFSET $3"
+	}
+	customQuery := fmt.Sprintf(query, stringUserId, stringLimit, stringOffset)
+	// inserts the strings into the string query if the related value "makes sense"
+	return customQuery
+}
+
+// the idea is to assign to the arguments the values in the slice of values (if they make sense, contextually) in order
+type RelatedPiles struct {
+	args   []any
+	values []optional
+	// All of this so i dont have to code the conditionals 1 by 1
+	// The cleaner way would be to pair this with the string parts of the query in a slightly more complex struct... This should work for now
+}
+
+func NewPairOfRelatedPiles(args []any, values []optional) *RelatedPiles {
+	return &RelatedPiles{
+		args:   args,
+		values: values,
+	}
+}
+
+type optional interface {
+	IsItThere() bool
+}
+
+func (piles *RelatedPiles) MakeAssociation() {
+	var i int // = 0
+	for _, v := range piles.values {
+		if v.IsItThere() {
+			piles.args[i] = v
+			i++
+		}
+	}
+}
+
+// Go doesnt let me implement an interface for int, maybe because its a built-in type
+type Number int
+
+func (n Number) IsItThere() bool {
+	if n >= 0 {
+		return true
+	}
+	return false
 }

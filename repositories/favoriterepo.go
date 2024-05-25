@@ -3,6 +3,7 @@ package repositories
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"main.go/models"
 )
 
@@ -14,11 +15,13 @@ func NewFavoriteRepo(db *sql.DB) *FavoriteRepo {
 	return &FavoriteRepo{db}
 }
 func (r *FavoriteRepo) GetFavorites(userId int, limit int, offset int) ([]*models.ProductRepresentation, error) {
-	query := `SELECT p.id, p.namex, p.description, p.imageurl, p.userx 
-				FROM favorites f, products p 
-            		WHERE f.userx=$1 AND f.product=p.id
-            		ORDER BY p.namex DESC LIMIT $2 OFFSET $3`
-	rows, err1 := r.db.Query(query, userId, limit, offset)
+	var arg1, arg2 any
+	var limitNumber, offsetNumber = Number(limit), Number(offset)
+	piles := NewPairOfRelatedPiles([]any{arg1, arg2}, []optional{limitNumber, offsetNumber})
+	piles.MakeAssociation()
+
+	query := customGetFavoritesQuery(limit, offset)
+	rows, err1 := r.db.Query(query, userId, piles.args[0], piles.args[1])
 	if err1 != nil {
 		return nil, SomethingWentWrong
 	}
@@ -84,4 +87,20 @@ func (r *FavoriteRepo) isFavorite(userId int, productId int) (bool, error) {
 		return false, SomethingWentWrong
 	}
 	return true, nil
+}
+
+func customGetFavoritesQuery(limit int, offset int) string {
+	var stringLimit, stringOffset string // if a string is not initialized, its value is ""
+	query := `SELECT p.id, p.namex, p.description, p.imageurl, p.userx 
+				FROM favorites f, products p 
+            		WHERE f.userx=$1 AND f.product=p.id
+            		ORDER BY p.namex DESC%s%s`
+	if limit >= 0 {
+		stringLimit = " LIMIT $2"
+	}
+	if offset >= 0 {
+		stringOffset = " OFFSET $3"
+	}
+	customQuery := fmt.Sprintf(query, stringLimit, stringOffset)
+	return customQuery
 }
