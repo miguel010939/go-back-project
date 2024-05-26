@@ -5,6 +5,7 @@ import (
 	_ "github.com/lib/pq"
 	"main.go/config"
 	db2 "main.go/db"
+	"main.go/repositories"
 	"main.go/routers"
 	"net/http"
 )
@@ -18,6 +19,7 @@ func main() {
 		fmt.Println(err1)
 		fmt.Println("Warning: Failed to connect to database")
 	}
+	auth := repositories.NewAuthRepo(db)
 	//db2.DropTables(db)
 	//db2.CreateTables(db)
 

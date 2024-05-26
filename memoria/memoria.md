@@ -100,23 +100,23 @@ classDiagram
 
 Endpoints
 
-| Modelo<br/>relacionado | Método | URL                               |   Headers   | Body | Errores                                                 |
-|------------------------|--------|-----------------------------------|:-----------:|:----:|---------------------------------------------------------|
-| User                   | POST   | /user/new                         |             | JSON | 201<br/>400<br/>409 conflict email                      |
-| User                   | POST   | /user/login                       |             | JSON | 201<br/>400<br/>409 already logged in                   |
-| User                   | DELETE | /user/logout                      | "sessionid" |  -   | 200<br/>401                                             |
-| Product                | GET    | /products/{id}                    |             |  -   | 200<br/>404                                             |
+| Modelo<br/>relacionado | Método | URL                              |   Headers   | Body | Errores                                                 |
+|------------------------|--------|----------------------------------|:-----------:|:----:|---------------------------------------------------------|
+| User                   | POST   | /user/new                        |             | JSON | 201<br/>400<br/>409 conflict email                      |
+| User                   | POST   | /user/login                      |             | JSON | 201<br/>400<br/>409 already logged in                   |
+| User                   | DELETE | /user/logout                     | "sessionid" |  -   | 200<br/>401                                             |
+| Product                | GET    | /products/{id}                   |             |  -   | 200<br/>404                                             |
 | Product                | GET    | /products?user=X&limit=Y&offset=Z |             |  -   | 200<br/>404                                             |
-| Product                | POST   | /products/new                     | "sessionid" | JSON | 201<br/>400                                             |
-| Product                | DELETE | /products/{id}                    | "sessionid" |  -   | 200<br/>404 no such product<br/>401 only owner can sell |
-| Bid                    | POST   | /bids?product=X&ammount=Y         | "sessionid" |  -   | 201<br/>404                                             |
-| Bid                    | DELETE | /bids/{id}                        | "sessionid" |  -   | 200<br/>400<br/>401                                     |
-| Follower               | GET    | /followers/follow                 | "sessionid" |  -   | 200<br/>404                                             |
-| Follower               | POST   | /followers/follow/{id}            | "sessionid" |  -   | 201<br/>404<br/>409 already followed                    |
-| Follower               | DELETE | /followers/follow/{id}            | "sessionid" |  -   | 200<br/>404                                             |
-| Favorite               | GET    | /favorites?limit=X&offset=Y       | "sessionid" |  -   | 200<br/>404                                             |
-| Favorite               | POST   | /favorites/{id}                   | "sessionid" |  -   | 201<br/>404<br/>409 already favorite                    |
-| Favorite               | DELETE | /favorites/{id}                   | "sessionid" |  -   | 200<br/>404                                             |
+| Product                | POST   | /products/new                    | "sessionid" | JSON | 201<br/>400                                             |
+| Product                | DELETE | /products/{id}                   | "sessionid" |  -   | 200<br/>404 no such product<br/>401 only owner can sell |
+| Bid                    | POST   | /bids?product=X&amount=Y         | "sessionid" |  -   | 201<br/>404                                             |
+| Bid                    | DELETE | /bids/{id}                       | "sessionid" |  -   | 200<br/>400<br/>401                                     |
+| Follower               | GET    | /followers/follow                | "sessionid" |  -   | 200<br/>404                                             |
+| Follower               | POST   | /followers/follow/{id}           | "sessionid" |  -   | 201<br/>404<br/>409 already followed                    |
+| Follower               | DELETE | /followers/follow/{id}           | "sessionid" |  -   | 200<br/>404                                             |
+| Favorite               | GET    | /favorites?limit=X&offset=Y      | "sessionid" |  -   | 200<br/>404                                             |
+| Favorite               | POST   | /favorites/{id}                  | "sessionid" |  -   | 201<br/>404<br/>409 already favorite                    |
+| Favorite               | DELETE | /favorites/{id}                  | "sessionid" |  -   | 200<br/>404                                             |
 
 
 ```javascript
