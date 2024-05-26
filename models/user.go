@@ -1,10 +1,5 @@
 package models
 
-type User struct {
-	ID       int    `json:"id"`
-	Username string `json:"username"`
-}
-
 type UserRepresentation struct {
 	ID       int    `json:"id"`
 	Username string `json:"username"`
