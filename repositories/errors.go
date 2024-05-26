@@ -1,8 +1,8 @@
 package repositories
 
-// TODO si tengo tiempo, explicar mejor porque creo este tipo de error
 import "net/http"
 
+// Error values with associated htpp.Status that i return from the repository layer, so i can deal with them in the handler layer
 type relatedError int
 
 const (
