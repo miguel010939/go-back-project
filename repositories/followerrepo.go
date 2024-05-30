@@ -15,7 +15,7 @@ func NewFollowerRepo(db *sql.DB) *FollowerRepo {
 }
 
 func (r *FollowerRepo) GetUsersWhomIFollow(userId int) ([]*models.UserRepresentation, error) {
-	query := `SELECT u.id, u.username FROM followers f, user u 
+	query := `SELECT u.id, u.username FROM followers f, users u 
             		WHERE f.usera=$1 AND f.userb=u.id`
 	rows, err1 := r.db.Query(query, userId)
 	if err1 != nil {
@@ -75,8 +75,9 @@ func (r *FollowerRepo) UnfollowSomeone(userId int, unfollowedUserId int) error {
 }
 
 func (r *FollowerRepo) isFollowing(userId int, followedUserId int) (bool, error) {
+	var testId int
 	checkQuery := `SELECT id FROM followers WHERE usera=$1 AND userb=$2`
-	err := r.db.QueryRow(checkQuery, userId, followedUserId).Scan()
+	err := r.db.QueryRow(checkQuery, userId, followedUserId).Scan(&testId)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return false, nil

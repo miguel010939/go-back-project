@@ -3,20 +3,19 @@ package models
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"main.go/repositories"
 )
 
 func (usf *UserSignUpForm) IsValiD() bool {
-	_, e1 := repositories.CleanUsername(usf.Username)
+	_, e1 := CleanUsername(usf.Username)
 	//_, e2 := repositories.CleanPassword(usf.Password)
-	_, e3 := repositories.CleanEmail(usf.Email)
+	_, e3 := CleanEmail(usf.Email)
 	if e1 != nil || e3 != nil {
 		return false
 	}
 	return true
 }
 func (ulf *UserLogInForm) IsValiD() bool {
-	_, e1 := repositories.CleanUsername(ulf.Username)
+	_, e1 := CleanUsername(ulf.Username)
 	//_, e2 := repositories.CleanPassword(ulf.Password)
 	if e1 != nil {
 		return false
@@ -25,9 +24,9 @@ func (ulf *UserLogInForm) IsValiD() bool {
 }
 
 func (pf *ProductForm) IsValiD() bool {
-	_, e1 := repositories.CleanName(pf.Name)
-	_, e2 := repositories.CleanDescription(pf.Description)
-	_, e3 := repositories.CleanUrl(pf.ImageUrl)
+	_, e1 := CleanName(pf.Name)
+	_, e2 := CleanDescription(pf.Description)
+	_, e3 := CleanUrl(pf.ImageUrl)
 	if e1 != nil || e2 != nil || e3 != nil {
 		return false
 	}

@@ -47,7 +47,7 @@ func (r *FavoriteRepo) GetFavorites(userId int, limit int, offset int) ([]*model
 func (r *FavoriteRepo) SaveFavorite(userId int, productId int) error {
 	favorite, err1 := r.isFavorite(userId, productId)
 	if err1 != nil {
-		return SomethingWentWrong
+		return err1
 	}
 	if favorite {
 		return Conflict
@@ -78,10 +78,21 @@ func (r *FavoriteRepo) DeleteFavorite(userId int, productId int) error {
 }
 
 func (r *FavoriteRepo) isFavorite(userId int, productId int) (bool, error) {
-	checkQuery := `SELECT id FROM favorites WHERE userx=$1 AND product=$2`
-	err := r.db.QueryRow(checkQuery, userId, productId).Scan()
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+	var testProductId int
+	checkProductQuery := `SELECT id FROM products WHERE id=$1`
+	err1 := r.db.QueryRow(checkProductQuery, productId).Scan(&testProductId)
+	if err1 != nil {
+		if errors.Is(err1, sql.ErrNoRows) {
+			return false, NotFound
+		}
+		return false, SomethingWentWrong
+	}
+
+	var testId int
+	checkFavoriteQuery := `SELECT id FROM favorites WHERE userx=$1 AND product=$2`
+	err2 := r.db.QueryRow(checkFavoriteQuery, userId, productId).Scan(&testId)
+	if err2 != nil {
+		if errors.Is(err2, sql.ErrNoRows) {
 			return false, nil
 		}
 		return false, SomethingWentWrong

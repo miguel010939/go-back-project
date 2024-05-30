@@ -39,7 +39,6 @@ func (ph *ProductHandler) GetProduct(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err2.Error(), http.StatusBadRequest)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 func (ph *ProductHandler) GetListProducts(w http.ResponseWriter, r *http.Request) {
 	// takes query params user, limit, offset, method Get
@@ -84,7 +83,6 @@ func (ph *ProductHandler) GetListProducts(w http.ResponseWriter, r *http.Request
 		http.Error(w, e2.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 func (ph *ProductHandler) PostNewProduct(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & JSON body productform, method Post
@@ -111,7 +109,7 @@ func (ph *ProductHandler) PostNewProduct(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	w.Header().Set("id", strconv.Itoa(savedProductId))
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 }
 func (ph *ProductHandler) DeleteOrSellProduct(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id, Method Delete

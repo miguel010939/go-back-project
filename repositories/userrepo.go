@@ -19,7 +19,7 @@ func (r *UserRepo) UserSignUp(signUpForm *models.UserSignUpForm, auth *AuthRepo)
 	}
 	signUpForm.HashPwd()
 	// Hash the passwords!!! This makes CleanPassword() redundant. I don't think im gonna bother salting them tho, we'll see
-	insertQuery := `INSERT INTO users (username, email, password)
+	insertQuery := `INSERT INTO users (username, email, hashedpswd)
 					VALUES ($1, $2, $3) 
 					RETURNING id`
 	var id int
@@ -41,7 +41,7 @@ func (r *UserRepo) UserLogIn(logInForm *models.UserLogInForm, auth *AuthRepo) (s
 	logInForm.HashPwd()
 	// Hash the passwords!!! This makes CleanPassword() redundant. I don't think im gonna bother salting them tho, we'll see
 	selectQuery := `SELECT id FROM users 
-					WHERE username = $1 AND password = $2`
+					WHERE username = $1 AND hashedpswd = $2`
 	var id int
 	var token string
 	err2 := r.db.QueryRow(selectQuery, logInForm.Username, logInForm.Password).Scan(&id)
@@ -69,24 +69,4 @@ func (r *UserRepo) UserLogOut(token string) error {
 		return NoPermission
 	}
 	return nil
-}
-
-// TODO Delete this sql equivalent to Hello World
-func (r *UserRepo) GetAllUsers() ([]models.User, error) {
-	rows, err := r.db.Query("SELECT id, username FROM users")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var users []models.User
-	for rows.Next() {
-		var user models.User
-		err := rows.Scan(&user.ID, &user.Username)
-		if err != nil {
-			return nil, err
-		}
-		users = append(users, user)
-	}
-	return users, nil
 }

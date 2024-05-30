@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"main.go/models"
 	"math/rand"
 	"time"
 )
@@ -20,13 +21,16 @@ func NewAuthRepo(db *sql.DB) *AuthRepo {
 
 func (r *AuthRepo) GetID(token string) (int, error) {
 	var id int
-	token, err1 := CleanToken(token)
+	token, err1 := models.CleanToken(token)
 	if err1 != nil {
 		return -1, InvalidInput
 	}
 	row := r.db.QueryRow("SELECT userx FROM sessions WHERE token=$1", token)
 	err := row.Scan(&id)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return -1, NoPermission
+		}
 		return -1, SomethingWentWrong
 	}
 	return id, nil

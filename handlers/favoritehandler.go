@@ -21,6 +21,7 @@ func NewFavoriteHandler(db *sql.DB) *FavoriteHandler {
 	}
 }
 
+// TODO DEBUG OPTIONAL PARAMS!! this can break limit, eg, is missing
 func (fah *FavoriteHandler) GetFavorites(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & query params limit & offset, method Get
 	limitStr := r.URL.Query().Get("limit")
@@ -72,7 +73,6 @@ func (fah *FavoriteHandler) GetFavorites(w http.ResponseWriter, r *http.Request)
 		http.Error(w, e2.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
 }
 func (fah *FavoriteHandler) SaveFavorite(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id (product), method Post

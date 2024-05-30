@@ -1,6 +1,9 @@
 package repositories
 
-import "net/http"
+import (
+	"fmt"
+	"net/http"
+)
 
 // Error values with associated htpp.Status that i return from the repository layer, so i can deal with them in the handler layer
 type relatedError int
@@ -15,5 +18,6 @@ const (
 )
 
 func (err relatedError) Error() string {
-	return "KABOOOM!!"
+	errMessage := fmt.Sprintf("Oh, no! Error code:%d", int(err))
+	return errMessage
 }

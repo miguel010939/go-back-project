@@ -53,8 +53,6 @@ func (foh *FollowerHandler) GetUsersImFollowing(w http.ResponseWriter, r *http.R
 		http.Error(w, e2.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
-
 }
 func (foh *FollowerHandler) FollowUser(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id (user), method Post

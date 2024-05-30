@@ -14,19 +14,19 @@ func Routes(r *http.ServeMux, db *sql.DB) {
 	r.HandleFunc("DELETE /users/logout", uh.LogOutHandler)
 
 	ph := handlers.NewProductHandler(db)
-	r.HandleFunc("GET products/", ph.GetProduct)
-	r.HandleFunc("GET products", ph.GetListProducts)
-	r.HandleFunc("POST products/new", ph.PostNewProduct)
-	r.HandleFunc("DELETE products/", ph.DeleteOrSellProduct)
+	r.HandleFunc("GET /products/", ph.GetProduct)
+	r.HandleFunc("GET /products", ph.GetListProducts)
+	r.HandleFunc("POST /products/new", ph.PostNewProduct)
+	r.HandleFunc("DELETE /products/", ph.DeleteOrSellProduct)
 
 	bh := handlers.NewBidHandler(db)
-	r.HandleFunc("POST bids", bh.PostBid)
-	r.HandleFunc("DELETE bids/", bh.DeleteBid)
+	r.HandleFunc("POST /bids", bh.PostBid)
+	r.HandleFunc("DELETE /bids/", bh.DeleteBid)
 
 	foh := handlers.NewFollowerHandler(db)
-	r.HandleFunc("GET followers/follow", foh.GetUsersImFollowing)
-	r.HandleFunc("POST followers/follow/", foh.FollowUser)
-	r.HandleFunc("DELETE followers/follow/", foh.UnfollowUser)
+	r.HandleFunc("GET /followers/follow", foh.GetUsersImFollowing)
+	r.HandleFunc("POST /followers/follow/", foh.FollowUser)
+	r.HandleFunc("DELETE /followers/follow/", foh.UnfollowUser)
 
 	fah := handlers.NewFavoriteHandler(db)
 	r.HandleFunc("GET /favorites", fah.GetFavorites)

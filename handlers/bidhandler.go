@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"fmt"
 	"main.go/repositories"
 	"net/http"
 	"strconv"
@@ -46,11 +47,12 @@ func (bh *BidHandler) PostBid(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// TODO i hope there is no problem with these types: f32 & f64
-	err3 := bh.repo.MakeBid(userId, productId, float32(amount))
+	bidId, err3 := bh.repo.MakeBid(userId, productId, float32(amount))
 	if err3 != nil {
 		errorDispatch(w, r, err3)
 		return
 	}
+	w.Header().Set("bidid", fmt.Sprintf("%d", bidId))
 	w.WriteHeader(http.StatusCreated)
 }
 func (bh *BidHandler) DeleteBid(w http.ResponseWriter, r *http.Request) {
@@ -59,7 +61,7 @@ func (bh *BidHandler) DeleteBid(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
-	} // TODO where does this id come from? i may have to refactor the post method so it returns the id of the bid just made, so the user can undo it
+	} // where does this id come from? i may have to refactor the post method so it returns the id of the bid just made, so the user can undo it
 
 	// user
 	token := r.Header.Get("sessionid")

@@ -12,15 +12,16 @@ func UralFactories(db *sql.DB, nUsers int, nProducts int, nFavorites int, nFollo
 	}
 	userFactory(db, nUsers)
 	productFactory(db, nUsers, nProducts)
-	favoriteFactory(db, nUsers, nProducts, nFavorites)
-	followerFactory(db, nUsers, nFollowers)
+	//favoriteFactory(db, nUsers, nProducts, nFavorites)
+	//followerFactory(db, nUsers, nFollowers)
 }
 
 func userFactory(db *sql.DB, nUsers int) {
 	userRepo := repositories.NewUserRepo(db)
+	authRepo := repositories.NewAuthRepo(db)
 	for i := 0; i < nUsers; i++ {
 		user := randomUser()
-		_, err := userRepo.UserSignUp(user)
+		_, err := userRepo.UserSignUp(user, authRepo)
 		// control for 409, just in case
 		if err != nil {
 			i--
