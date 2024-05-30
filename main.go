@@ -5,6 +5,7 @@ import (
 	_ "github.com/lib/pq"
 	"main.go/config"
 	db2 "main.go/db"
+	"main.go/factories"
 	"main.go/routers"
 	"net/http"
 )
@@ -18,8 +19,9 @@ func main() {
 		fmt.Println(err1)
 		fmt.Println("Warning: Failed to connect to database")
 	}
-	//db2.DropTables(db)
-	//db2.CreateTables(db)
+	db2.DropTables(db)
+	db2.CreateTables(db)
+	factories.UralFactories(db, 100, 200, 50, 30)
 
 	r := http.NewServeMux()
 	routers.Routes(r, db)
