@@ -31,10 +31,98 @@ func NewAuctionHandler(db *sql.DB) *AuctionHandler {
 
 func (auh *AuctionHandler) PostAuction(w http.ResponseWriter, r *http.Request) {
 	// TODO
+	// product
+	prodIdStr := r.URL.Query().Get("product")
+	if prodIdStr == "" {
+		http.Error(w, "missing product id", http.StatusBadRequest)
+		return
+	}
+	prodId, err1 := strconv.Atoi(prodIdStr)
+	if err1 != nil {
+		http.Error(w, "invalid product id", http.StatusBadRequest)
+		return
+	}
+	if auh.auctionExists(prodId) {
+		http.Error(w, "already exists", http.StatusConflict)
+		return
+	}
+	// user
+	token := r.Header.Get("sessionid")
+	if token == "" {
+		http.Error(w, "missing token", http.StatusUnauthorized)
+		return
+	}
+	userId, err2 := auh.auth.GetID(token)
+	if err2 != nil {
+		errorDispatch(w, r, err2)
+		return
+	}
+	// only the owner can put a product for auction or sell it/take it out
+	ownerId, err3 := auh.getProductOwner(prodId)
+	if err3 != nil {
+		errorDispatch(w, r, err3)
+		return
+	}
+	if ownerId != userId {
+		http.Error(w, "invalid user", http.StatusUnauthorized)
+		return
+	}
+	// Creates the new auction
+	auh.auctions[prodId] = NewAuction(prodId)
 }
 func (auh *AuctionHandler) DeleteAuction(w http.ResponseWriter, r *http.Request) {
 	// TODO
+	// product
+	prodIdStr := r.URL.Query().Get("product")
+	if prodIdStr == "" {
+		http.Error(w, "missing product id", http.StatusBadRequest)
+		return
+	}
+	prodId, err1 := strconv.Atoi(prodIdStr)
+	if err1 != nil {
+		http.Error(w, "invalid product id", http.StatusBadRequest)
+		return
+	}
+	if !auh.auctionExists(prodId) {
+		http.Error(w, "does not exist", http.StatusNotFound)
+		return
+	}
+	// user
+	token := r.Header.Get("sessionid")
+	if token == "" {
+		http.Error(w, "missing token", http.StatusUnauthorized)
+		return
+	}
+	userId, err2 := auh.auth.GetID(token)
+	if err2 != nil {
+		errorDispatch(w, r, err2)
+		return
+	}
+	// only the owner can put a product for auction or sell it/take it out
+	ownerId, err3 := auh.getProductOwner(prodId)
+	if err3 != nil {
+		errorDispatch(w, r, err3)
+		return
+	}
+	if ownerId != userId {
+		http.Error(w, "invalid user", http.StatusUnauthorized)
+		return
+	}
+	// Deletes the auction
+	delete(auh.auctions, prodId)
 }
+func (auh *AuctionHandler) auctionExists(productId int) bool {
+	_, ok := auh.auctions[productId]
+	return ok
+}
+func (auh *AuctionHandler) getProductOwner(productId int) (int, error) {
+	product, err := auh.prod.GetProductById(productId)
+	if err != nil {
+		return -1, err
+	}
+	return product.UserID, nil
+}
+
 func (auh *AuctionHandler) ObserveAuctionHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "text/event-stream")
