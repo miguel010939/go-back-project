@@ -18,7 +18,7 @@ func NewBidMessage(amount float32) *BidMessage {
 type AuctionHandler struct {
 	auth     repositories.AuthRepo
 	prod     repositories.ProductRepo
-	auctions map[int]*Auction // TODO Create and Delete Auctions
+	auctions map[int]*Auction
 }
 
 func NewAuctionHandler(db *sql.DB) *AuctionHandler {
@@ -30,7 +30,6 @@ func NewAuctionHandler(db *sql.DB) *AuctionHandler {
 }
 
 func (auh *AuctionHandler) PostAuction(w http.ResponseWriter, r *http.Request) {
-	// TODO
 	// product
 	prodIdStr := r.URL.Query().Get("product")
 	if prodIdStr == "" {
@@ -71,7 +70,6 @@ func (auh *AuctionHandler) PostAuction(w http.ResponseWriter, r *http.Request) {
 	auh.auctions[prodId] = NewAuction(prodId)
 }
 func (auh *AuctionHandler) DeleteAuction(w http.ResponseWriter, r *http.Request) {
-	// TODO
 	// product
 	prodIdStr := r.URL.Query().Get("product")
 	if prodIdStr == "" {
@@ -123,7 +121,7 @@ func (auh *AuctionHandler) getProductOwner(productId int) (int, error) {
 	return product.UserID, nil
 }
 
-func (auh *AuctionHandler) ObserveAuctionHandler(w http.ResponseWriter, r *http.Request) {
+func (auh *AuctionHandler) ObserveAuction(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")

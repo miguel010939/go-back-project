@@ -33,6 +33,11 @@ func Routes(r *http.ServeMux, db *sql.DB) {
 	r.HandleFunc("POST /favorites/", fah.SaveFavorite)
 	r.HandleFunc("DELETE /favorites/", fah.DeleteFavorite)
 
+	auh := handlers.NewAuctionHandler(db)
+	r.HandleFunc("POST /auctions/watch", auh.ObserveAuction)
+	r.HandleFunc("POST /auctions", auh.PostAuction)
+	r.HandleFunc("DELETE /auctions", auh.DeleteAuction)
+
 	// TODO maybe its better to sub my toy path param parser with the official recent addition to the SL
 	r.Handle("/{$}", http.FileServer(http.Dir("./static/")))
 }
