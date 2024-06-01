@@ -41,7 +41,7 @@ func (auh *AuctionHandler) PostAuction(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid product id", http.StatusBadRequest)
 		return
 	}
-	if auh.auctionExists(prodId) {
+	if auh.AuctionExists(prodId) {
 		http.Error(w, "already exists", http.StatusConflict)
 		return
 	}
@@ -81,7 +81,7 @@ func (auh *AuctionHandler) DeleteAuction(w http.ResponseWriter, r *http.Request)
 		http.Error(w, "invalid product id", http.StatusBadRequest)
 		return
 	}
-	if !auh.auctionExists(prodId) {
+	if !auh.AuctionExists(prodId) {
 		http.Error(w, "does not exist", http.StatusNotFound)
 		return
 	}
@@ -109,7 +109,7 @@ func (auh *AuctionHandler) DeleteAuction(w http.ResponseWriter, r *http.Request)
 	// Deletes the auction
 	delete(auh.auctions, prodId)
 }
-func (auh *AuctionHandler) auctionExists(productId int) bool {
+func (auh *AuctionHandler) AuctionExists(productId int) bool {
 	_, ok := auh.auctions[productId]
 	return ok
 }
@@ -165,4 +165,9 @@ func (auh *AuctionHandler) ObserveAuction(w http.ResponseWriter, r *http.Request
 	auction.subscribe(obs)
 	obs.Listen(r.Context(), w, flusher)
 	auction.unsubscribe(obs)
+}
+
+func (auh *AuctionHandler) BidForProduct(userId int, productId int, amount float32) {
+	auction := auh.auctions[productId]
+	auction.Bid(amount)
 }

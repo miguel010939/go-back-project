@@ -9,14 +9,16 @@ import (
 )
 
 type BidHandler struct {
-	repo repositories.BidRepo
-	auth repositories.AuthRepo
+	repo           repositories.BidRepo
+	auth           repositories.AuthRepo
+	auctionHandler *AuctionHandler
 }
 
-func NewBidHandler(db *sql.DB) *BidHandler {
+func NewBidHandler(db *sql.DB, auctionHandler *AuctionHandler) *BidHandler {
 	return &BidHandler{
-		repo: *repositories.NewBidRepo(db),
-		auth: *repositories.NewAuthRepo(db),
+		repo:           *repositories.NewBidRepo(db),
+		auth:           *repositories.NewAuthRepo(db),
+		auctionHandler: auctionHandler,
 	}
 }
 
@@ -46,12 +48,16 @@ func (bh *BidHandler) PostBid(w http.ResponseWriter, r *http.Request) {
 		errorDispatch(w, r, err2)
 		return
 	}
-	// TODO i hope there is no problem with these types: f32 & f64
+	if !bh.auctionHandler.AuctionExists(productId) {
+		http.Error(w, "product not in auction", http.StatusNotFound)
+		return
+	}
 	bidId, err3 := bh.repo.MakeBid(userId, productId, float32(amount))
 	if err3 != nil {
 		errorDispatch(w, r, err3)
 		return
 	}
+	bh.auctionHandler.BidForProduct(userId, productId, float32(amount))
 	w.Header().Set("bidid", fmt.Sprintf("%d", bidId))
 	w.WriteHeader(http.StatusCreated)
 }
