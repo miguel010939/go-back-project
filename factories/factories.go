@@ -12,8 +12,8 @@ func UralFactories(db *sql.DB, nUsers int, nProducts int, nFavorites int, nFollo
 	}
 	userFactory(db, nUsers)
 	productFactory(db, nUsers, nProducts)
-	//favoriteFactory(db, nUsers, nProducts, nFavorites)
-	//followerFactory(db, nUsers, nFollowers)
+	favoriteFactory(db, nUsers, nProducts, nFavorites)
+	followerFactory(db, nUsers, nFollowers)
 }
 
 func userFactory(db *sql.DB, nUsers int) {

@@ -19,7 +19,12 @@ func Routes(r *http.ServeMux, db *sql.DB) {
 	r.HandleFunc("POST /products/new", ph.PostNewProduct)
 	r.HandleFunc("DELETE /products/", ph.DeleteOrSellProduct)
 
-	bh := handlers.NewBidHandler(db)
+	auh := handlers.NewAuctionHandler(db)
+	r.HandleFunc("GET /auctions/watch", auh.ObserveAuction)
+	r.HandleFunc("POST /auctions", auh.PostAuction)
+	r.HandleFunc("DELETE /auctions", auh.DeleteAuction)
+
+	bh := handlers.NewBidHandler(db, auh)
 	r.HandleFunc("POST /bids", bh.PostBid)
 	r.HandleFunc("DELETE /bids/", bh.DeleteBid)
 
