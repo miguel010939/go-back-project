@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	AUCTION_CAPACITY = 200
+	AuctionCapacity = 200
 )
 
 type Auction struct {
@@ -21,7 +21,7 @@ func NewAuction(prodId int) *Auction {
 		ProdId:  prodId,
 		Max:     0.0,
 		Subs:    make(map[int]int),
-		NotList: make([]*AuctionObserver, AUCTION_CAPACITY),
+		NotList: make([]*AuctionObserver, AuctionCapacity),
 	}
 }
 

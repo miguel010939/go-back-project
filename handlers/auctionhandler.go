@@ -107,7 +107,7 @@ func (auh *AuctionHandler) DeleteAuction(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	// Deletes the auction
-	delete(auh.auctions, prodId)
+	delete(auh.auctions, prodId) //TODO does this really delete the auction? if this is the only ref the GC should del it
 }
 func (auh *AuctionHandler) AuctionExists(productId int) bool {
 	_, ok := auh.auctions[productId]

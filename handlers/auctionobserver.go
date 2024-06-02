@@ -28,10 +28,11 @@ func NewAuctionObserver(userId int) *AuctionObserver {
 }
 
 func (obs *AuctionObserver) notify(bm *BidMessage, wg *sync.WaitGroup) {
-	wg.Add(1)
 	if obs == nil {
 		return
 	}
+	wg.Add(1)
+
 	obs.channel <- *bm // bm is not modified in the goroutine, as it is, so no risk of race conditions
 
 	wg.Done()
