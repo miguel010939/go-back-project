@@ -36,14 +36,16 @@ func (fah *FavoriteHandler) GetFavorites(w http.ResponseWriter, r *http.Request)
 	limit, err2 := strconv.Atoi(limitStr)
 	offset, err3 := strconv.Atoi(offsetStr)
 	if err2 != nil || err3 != nil {
-		http.Error(w, "invalid query params", http.StatusBadRequest)
+		//http.Error(w, "invalid query params", http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 
 	// user
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "Missing token", http.StatusUnauthorized)
+		//http.Error(w, "Missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	userId, err2 := fah.auth.GetID(token)
@@ -64,28 +66,33 @@ func (fah *FavoriteHandler) GetFavorites(w http.ResponseWriter, r *http.Request)
 
 	jsonData, e := json.Marshal(favoritesArray)
 	if e != nil {
-		http.Error(w, e.Error(), http.StatusInternalServerError)
+		//http.Error(w, e.Error(), http.StatusInternalServerError)
+		errorDispatch(w, r, repositories.SomethingWentWrong)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_, e2 := w.Write(jsonData)
 	if e2 != nil {
-		http.Error(w, e2.Error(), http.StatusInternalServerError)
+		//http.Error(w, e2.Error(), http.StatusInternalServerError)
+		errorDispatch(w, r, repositories.SomethingWentWrong)
 		return
 	}
+	// TODO log success
 }
 func (fah *FavoriteHandler) SaveFavorite(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id (product), method Post
 	id, err := ParseIntPathParam(r.URL.Path, "favorites/")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		//http.Error(w, err.Error(), http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 
 	// user
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "Missing token", http.StatusUnauthorized)
+		//http.Error(w, "Missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	userId, err2 := fah.auth.GetID(token)
@@ -100,19 +107,22 @@ func (fah *FavoriteHandler) SaveFavorite(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
+	// TODO log success
 }
 func (fah *FavoriteHandler) DeleteFavorite(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id (product), method Delete
 	id, err := ParseIntPathParam(r.URL.Path, "favorites/")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		//http.Error(w, err.Error(), http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 
 	// user
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "Missing token", http.StatusUnauthorized)
+		//http.Error(w, "Missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	userId, err2 := fah.auth.GetID(token)
@@ -127,4 +137,5 @@ func (fah *FavoriteHandler) DeleteFavorite(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+	// TODO log success
 }

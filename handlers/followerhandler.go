@@ -24,7 +24,8 @@ func (foh *FollowerHandler) GetUsersImFollowing(w http.ResponseWriter, r *http.R
 	// user
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "Missing token", http.StatusUnauthorized)
+		//http.Error(w, "Missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	userId, err2 := foh.auth.GetID(token)
@@ -44,28 +45,33 @@ func (foh *FollowerHandler) GetUsersImFollowing(w http.ResponseWriter, r *http.R
 
 	jsonData, e := json.Marshal(followedArray)
 	if e != nil {
-		http.Error(w, e.Error(), http.StatusInternalServerError)
+		//http.Error(w, e.Error(), http.StatusInternalServerError)
+		errorDispatch(w, r, repositories.SomethingWentWrong)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_, e2 := w.Write(jsonData)
 	if e2 != nil {
-		http.Error(w, e2.Error(), http.StatusInternalServerError)
+		//http.Error(w, e2.Error(), http.StatusInternalServerError)
+		errorDispatch(w, r, repositories.SomethingWentWrong)
 		return
 	}
+	// TODO log success
 }
 func (foh *FollowerHandler) FollowUser(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id (user), method Post
 	followedId, err := ParseIntPathParam(r.URL.Path, "follow/")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		//http.Error(w, err.Error(), http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 
 	// user
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "Missing token", http.StatusUnauthorized)
+		//http.Error(w, "Missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	userId, err2 := foh.auth.GetID(token)
@@ -80,19 +86,22 @@ func (foh *FollowerHandler) FollowUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
+	// TODO log success
 }
 func (foh *FollowerHandler) UnfollowUser(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id (user), method Delete
 	followedId, err := ParseIntPathParam(r.URL.Path, "follow/")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		//http.Error(w, err.Error(), http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 
 	// user
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "Missing token", http.StatusUnauthorized)
+		//http.Error(w, "Missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	userId, err2 := foh.auth.GetID(token)
@@ -107,4 +116,5 @@ func (foh *FollowerHandler) UnfollowUser(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+	// TODO log success
 }

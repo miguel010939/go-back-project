@@ -33,22 +33,26 @@ func (auh *AuctionHandler) PostAuction(w http.ResponseWriter, r *http.Request) {
 	// product
 	prodIdStr := r.URL.Query().Get("product")
 	if prodIdStr == "" {
-		http.Error(w, "missing product id", http.StatusBadRequest)
+		//http.Error(w, "missing product id", http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 	prodId, err1 := strconv.Atoi(prodIdStr)
 	if err1 != nil {
-		http.Error(w, "invalid product id", http.StatusBadRequest)
+		//http.Error(w, "invalid product id", http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 	if auh.AuctionExists(prodId) {
-		http.Error(w, "already exists", http.StatusConflict)
+		//http.Error(w, "already exists", http.StatusConflict)
+		errorDispatch(w, r, repositories.Conflict)
 		return
 	}
 	// user
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "missing token", http.StatusUnauthorized)
+		//http.Error(w, "missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	userId, err2 := auh.auth.GetID(token)
@@ -63,32 +67,38 @@ func (auh *AuctionHandler) PostAuction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if ownerId != userId {
-		http.Error(w, "invalid user", http.StatusUnauthorized)
+		//http.Error(w, "invalid user", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	// Creates the new auction
 	auh.auctions[prodId] = NewAuction(prodId)
+	// TODO log success
 }
 func (auh *AuctionHandler) DeleteAuction(w http.ResponseWriter, r *http.Request) {
 	// product
 	prodIdStr := r.URL.Query().Get("product")
 	if prodIdStr == "" {
-		http.Error(w, "missing product id", http.StatusBadRequest)
+		//http.Error(w, "missing product id", http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 	prodId, err1 := strconv.Atoi(prodIdStr)
 	if err1 != nil {
-		http.Error(w, "invalid product id", http.StatusBadRequest)
+		//http.Error(w, "invalid product id", http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 	if !auh.AuctionExists(prodId) {
-		http.Error(w, "does not exist", http.StatusNotFound)
+		//http.Error(w, "does not exist", http.StatusNotFound)
+		errorDispatch(w, r, repositories.NotFound)
 		return
 	}
 	// user
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "missing token", http.StatusUnauthorized)
+		//http.Error(w, "missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	userId, err2 := auh.auth.GetID(token)
@@ -103,11 +113,13 @@ func (auh *AuctionHandler) DeleteAuction(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	if ownerId != userId {
-		http.Error(w, "invalid user", http.StatusUnauthorized)
+		//http.Error(w, "invalid user", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	// Deletes the auction
 	delete(auh.auctions, prodId) //TODO does this really delete the auction? if this is the only ref the GC should del it
+	// TODO log success
 }
 func (auh *AuctionHandler) AuctionExists(productId int) bool {
 	_, ok := auh.auctions[productId]
@@ -129,18 +141,21 @@ func (auh *AuctionHandler) ObserveAuction(w http.ResponseWriter, r *http.Request
 	// product
 	prodIdStr := r.URL.Query().Get("product")
 	if prodIdStr == "" {
-		http.Error(w, "missing product id", http.StatusBadRequest)
+		//http.Error(w, "missing product id", http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 	prodId, err1 := strconv.Atoi(prodIdStr)
 	if err1 != nil {
-		http.Error(w, "invalid product id", http.StatusBadRequest)
+		//http.Error(w, "invalid product id", http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 	// user
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "missing token", http.StatusUnauthorized)
+		//http.Error(w, "missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	userId, err2 := auh.auth.GetID(token)
@@ -151,14 +166,16 @@ func (auh *AuctionHandler) ObserveAuction(w http.ResponseWriter, r *http.Request
 
 	flusher, ok := w.(http.Flusher)
 	if !ok {
-		http.Error(w, "invalid product id", http.StatusBadRequest)
+		//http.Error(w, "invalid product id", http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 
 	obs := NewAuctionObserver(userId)
 	auction, exists := auh.auctions[prodId]
 	if !exists {
-		http.Error(w, "product not in auction", http.StatusNotFound)
+		//http.Error(w, "product not in auction", http.StatusNotFound)
+		errorDispatch(w, r, repositories.NotFound)
 		return
 	}
 
