@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"main.go/logging"
 	"main.go/models"
 	"main.go/repositories"
 	"net/http"
@@ -23,7 +24,7 @@ func (uh *UserHandler) SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	// takes json body usersingupform, method Post
 	var user models.UserSignUpForm
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 	token, err := uh.repo.UserSignUp(&user, &uh.auth)
@@ -33,12 +34,13 @@ func (uh *UserHandler) SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("sessionid", token)
 	w.WriteHeader(http.StatusCreated)
+	logging.Log(r, 201)
 }
 func (uh *UserHandler) LogInHandler(w http.ResponseWriter, r *http.Request) {
 	// takes json body userloginform, method Post
 	var user models.UserLogInForm
 	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 	token, err := uh.repo.UserLogIn(&user, &uh.auth)
@@ -48,12 +50,14 @@ func (uh *UserHandler) LogInHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("sessionid", token)
 	w.WriteHeader(http.StatusCreated)
+	logging.Log(r, 201)
 }
 func (uh *UserHandler) LogOutHandler(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" with token, method Delete
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "Missing token", http.StatusUnauthorized)
+		//http.Error(w, "Missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	err := uh.repo.UserLogOut(token)
@@ -62,4 +66,5 @@ func (uh *UserHandler) LogOutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
+	logging.Log(r, 204)
 }

@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"main.go/logging"
 	"main.go/models"
 	"main.go/repositories"
 	"net/http"
@@ -25,7 +26,8 @@ func (ph *ProductHandler) GetProduct(w http.ResponseWriter, r *http.Request) {
 	// takes path param id:int , method get
 	id, err := ParseIntPathParam(r.URL.Path, "products/")
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		//http.Error(w, err.Error(), http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 	product, err := ph.repo.GetProductById(id)
@@ -36,9 +38,11 @@ func (ph *ProductHandler) GetProduct(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	err2 := json.NewEncoder(w).Encode(*product)
 	if err2 != nil {
-		http.Error(w, err2.Error(), http.StatusBadRequest)
+		//http.Error(w, err2.Error(), http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
+	logging.Log(r, 200)
 }
 func (ph *ProductHandler) GetListProducts(w http.ResponseWriter, r *http.Request) {
 	// takes query params user, limit, offset, method Get
@@ -59,7 +63,8 @@ func (ph *ProductHandler) GetListProducts(w http.ResponseWriter, r *http.Request
 	limit, err2 := strconv.Atoi(limitStr)
 	offset, err3 := strconv.Atoi(offsetStr)
 	if err1 != nil || err2 != nil || err3 != nil {
-		http.Error(w, "invalid query params", http.StatusBadRequest)
+		//http.Error(w, "invalid query params", http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 
@@ -74,28 +79,33 @@ func (ph *ProductHandler) GetListProducts(w http.ResponseWriter, r *http.Request
 
 	jsonData, e := json.Marshal(productArray)
 	if e != nil {
-		http.Error(w, e.Error(), http.StatusInternalServerError)
+		//http.Error(w, e.Error(), http.StatusInternalServerError)
+		errorDispatch(w, r, repositories.SomethingWentWrong)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_, e2 := w.Write(jsonData)
 	if e2 != nil {
-		http.Error(w, e2.Error(), http.StatusInternalServerError)
+		//http.Error(w, e2.Error(), http.StatusInternalServerError)
+		errorDispatch(w, r, repositories.SomethingWentWrong)
 		return
 	}
+	logging.Log(r, 200)
 }
 func (ph *ProductHandler) PostNewProduct(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & JSON body productform, method Post
 	// product
 	var product models.ProductForm
 	if err1 := json.NewDecoder(r.Body).Decode(&product); err1 != nil {
-		http.Error(w, err1.Error(), http.StatusBadRequest)
+		//http.Error(w, err1.Error(), http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 	// user
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "Missing token", http.StatusUnauthorized)
+		//http.Error(w, "Missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	id, err2 := ph.auth.GetID(token)
@@ -110,17 +120,20 @@ func (ph *ProductHandler) PostNewProduct(w http.ResponseWriter, r *http.Request)
 	}
 	w.Header().Set("id", strconv.Itoa(savedProductId))
 	w.WriteHeader(http.StatusCreated)
+	logging.Log(r, 201)
 }
 func (ph *ProductHandler) DeleteOrSellProduct(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id, Method Delete
 	id, err1 := ParseIntPathParam(r.URL.Path, "products/")
 	if err1 != nil {
-		http.Error(w, err1.Error(), http.StatusBadRequest)
+		//http.Error(w, err1.Error(), http.StatusBadRequest)
+		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
 	token := r.Header.Get("sessionid")
 	if token == "" {
-		http.Error(w, "Missing token", http.StatusUnauthorized)
+		//http.Error(w, "Missing token", http.StatusUnauthorized)
+		errorDispatch(w, r, repositories.NoPermission)
 		return
 	}
 	userId, err2 := ph.auth.GetID(token)
@@ -135,4 +148,5 @@ func (ph *ProductHandler) DeleteOrSellProduct(w http.ResponseWriter, r *http.Req
 		return
 	}
 	w.WriteHeader(http.StatusNoContent) // TODO update docs to include all the error codes that were added later
+	logging.Log(r, 204)
 }
