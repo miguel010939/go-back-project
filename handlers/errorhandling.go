@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"errors"
+	"main.go/logging"
 	"main.go/repositories"
 	"net/http"
 )
@@ -21,4 +22,6 @@ func errorDispatch(w http.ResponseWriter, r *http.Request, e error) {
 	default:
 		http.Error(w, e.Error(), http.StatusTeapot)
 	}
+
+	logging.Log(r, int(e.(repositories.RelatedError))) // type assertion followed by type conversion
 }
