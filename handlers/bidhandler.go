@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"main.go/logging"
 	"main.go/repositories"
 	"net/http"
 	"strconv"
@@ -64,7 +65,7 @@ func (bh *BidHandler) PostBid(w http.ResponseWriter, r *http.Request) {
 	bh.auctionHandler.BidForProduct(userId, productId, float32(amount))
 	w.Header().Set("bidid", fmt.Sprintf("%d", bidId))
 	w.WriteHeader(http.StatusCreated)
-	// TODO log success
+	logging.Log(r, 201)
 }
 func (bh *BidHandler) DeleteBid(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id (product) , method Delete
@@ -94,5 +95,5 @@ func (bh *BidHandler) DeleteBid(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
-	// TODO log success
+	logging.Log(r, 204)
 }

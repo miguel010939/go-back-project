@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"main.go/logging"
 	"main.go/repositories"
 	"net/http"
 	"strconv"
@@ -73,7 +74,7 @@ func (auh *AuctionHandler) PostAuction(w http.ResponseWriter, r *http.Request) {
 	}
 	// Creates the new auction
 	auh.auctions[prodId] = NewAuction(prodId)
-	// TODO log success
+	logging.Log(r, 201)
 }
 func (auh *AuctionHandler) DeleteAuction(w http.ResponseWriter, r *http.Request) {
 	// product
@@ -119,7 +120,7 @@ func (auh *AuctionHandler) DeleteAuction(w http.ResponseWriter, r *http.Request)
 	}
 	// Deletes the auction
 	delete(auh.auctions, prodId) //TODO does this really delete the auction? if this is the only ref the GC should del it
-	// TODO log success
+	logging.Log(r, 204)
 }
 func (auh *AuctionHandler) AuctionExists(productId int) bool {
 	_, ok := auh.auctions[productId]

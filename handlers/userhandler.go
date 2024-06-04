@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"main.go/logging"
 	"main.go/models"
 	"main.go/repositories"
 	"net/http"
@@ -33,7 +34,7 @@ func (uh *UserHandler) SignUpHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("sessionid", token)
 	w.WriteHeader(http.StatusCreated)
-	// TODO log success
+	logging.Log(r, 201)
 }
 func (uh *UserHandler) LogInHandler(w http.ResponseWriter, r *http.Request) {
 	// takes json body userloginform, method Post
@@ -49,7 +50,7 @@ func (uh *UserHandler) LogInHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("sessionid", token)
 	w.WriteHeader(http.StatusCreated)
-	// TODO log success
+	logging.Log(r, 201)
 }
 func (uh *UserHandler) LogOutHandler(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" with token, method Delete
@@ -65,5 +66,5 @@ func (uh *UserHandler) LogOutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
-	// TODO log success
+	logging.Log(r, 204)
 }

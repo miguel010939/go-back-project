@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"main.go/logging"
 	"main.go/models"
 	"main.go/repositories"
 	"net/http"
@@ -41,7 +42,7 @@ func (ph *ProductHandler) GetProduct(w http.ResponseWriter, r *http.Request) {
 		errorDispatch(w, r, repositories.InvalidInput)
 		return
 	}
-	// TODO log success
+	logging.Log(r, 200)
 }
 func (ph *ProductHandler) GetListProducts(w http.ResponseWriter, r *http.Request) {
 	// takes query params user, limit, offset, method Get
@@ -89,7 +90,7 @@ func (ph *ProductHandler) GetListProducts(w http.ResponseWriter, r *http.Request
 		errorDispatch(w, r, repositories.SomethingWentWrong)
 		return
 	}
-	// TODO log success
+	logging.Log(r, 200)
 }
 func (ph *ProductHandler) PostNewProduct(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & JSON body productform, method Post
@@ -119,7 +120,7 @@ func (ph *ProductHandler) PostNewProduct(w http.ResponseWriter, r *http.Request)
 	}
 	w.Header().Set("id", strconv.Itoa(savedProductId))
 	w.WriteHeader(http.StatusCreated)
-	// TODO log success
+	logging.Log(r, 201)
 }
 func (ph *ProductHandler) DeleteOrSellProduct(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id, Method Delete
@@ -147,5 +148,5 @@ func (ph *ProductHandler) DeleteOrSellProduct(w http.ResponseWriter, r *http.Req
 		return
 	}
 	w.WriteHeader(http.StatusNoContent) // TODO update docs to include all the error codes that were added later
-	// TODO log success
+	logging.Log(r, 204)
 }

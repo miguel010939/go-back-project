@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"main.go/logging"
 	"main.go/models"
 	"main.go/repositories"
 	"net/http"
@@ -56,7 +57,7 @@ func (foh *FollowerHandler) GetUsersImFollowing(w http.ResponseWriter, r *http.R
 		errorDispatch(w, r, repositories.SomethingWentWrong)
 		return
 	}
-	// TODO log success
+	logging.Log(r, 200)
 }
 func (foh *FollowerHandler) FollowUser(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id (user), method Post
@@ -86,7 +87,7 @@ func (foh *FollowerHandler) FollowUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
-	// TODO log success
+	logging.Log(r, 201)
 }
 func (foh *FollowerHandler) UnfollowUser(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id (user), method Delete
@@ -116,5 +117,5 @@ func (foh *FollowerHandler) UnfollowUser(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
-	// TODO log success
+	logging.Log(r, 204)
 }

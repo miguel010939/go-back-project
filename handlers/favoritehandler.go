@@ -3,6 +3,7 @@ package handlers
 import (
 	"database/sql"
 	"encoding/json"
+	"main.go/logging"
 	"main.go/models"
 	"main.go/repositories"
 	"net/http"
@@ -77,7 +78,7 @@ func (fah *FavoriteHandler) GetFavorites(w http.ResponseWriter, r *http.Request)
 		errorDispatch(w, r, repositories.SomethingWentWrong)
 		return
 	}
-	// TODO log success
+	logging.Log(r, 200)
 }
 func (fah *FavoriteHandler) SaveFavorite(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id (product), method Post
@@ -107,7 +108,7 @@ func (fah *FavoriteHandler) SaveFavorite(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
-	// TODO log success
+	logging.Log(r, 201)
 }
 func (fah *FavoriteHandler) DeleteFavorite(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & path param id (product), method Delete
@@ -137,5 +138,5 @@ func (fah *FavoriteHandler) DeleteFavorite(w http.ResponseWriter, r *http.Reques
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
-	// TODO log success
+	logging.Log(r, 204)
 }
