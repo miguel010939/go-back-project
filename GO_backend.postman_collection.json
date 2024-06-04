@@ -1,0 +1,400 @@
+{
+	"info": {
+		"_postman_id": "89f50d75-fe20-4632-97c0-f63297010063",
+		"name": "PFC",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33365639"
+	},
+	"item": [
+		{
+			"name": "users/new",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"object4\",\r\n    \"email\": \"asdf@gmail.com\",\r\n    \"password\": \"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:8090/users/new"
+			},
+			"response": []
+		},
+		{
+			"name": "/users/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"object4\",\r\n    \"password\": \"1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:8090/users/login"
+			},
+			"response": []
+		},
+		{
+			"name": "/users/logout",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "e09a1dcf8e16c73d6b4b3d2d68cdb1e2"
+					}
+				],
+				"url": "http://127.0.0.1:8090/users/logout"
+			},
+			"response": []
+		},
+		{
+			"name": "/products/1",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://127.0.0.1:8090/products/1"
+			},
+			"response": []
+		},
+		{
+			"name": "/products?user=1&limit=20&offset=0",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8090/products?user=1&limit=20&offset=0",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8090",
+					"path": [
+						"products"
+					],
+					"query": [
+						{
+							"key": "user",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/products/new",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "1234123"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"nombre\",\r\n    \"description\": \"description\",\r\n    \"imageUrl\": \"image\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://127.0.0.1:8090/products/new"
+			},
+			"response": []
+		},
+		{
+			"name": "/products/1",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "12312412"
+					}
+				],
+				"url": "http://127.0.0.1:8090/products/1"
+			},
+			"response": []
+		},
+		{
+			"name": "/bids?product=1&amount=2",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "231243124"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8090/bids?product=1&amount=2",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8090",
+					"path": [
+						"bids"
+					],
+					"query": [
+						{
+							"key": "product",
+							"value": "1"
+						},
+						{
+							"key": "amount",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/bids/1",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "12321"
+					}
+				],
+				"url": "http://127.0.0.1:8090/bids/1"
+			},
+			"response": []
+		},
+		{
+			"name": "/followers/follow",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": ""
+					}
+				],
+				"url": "http://127.0.0.1:8090/followers/follow"
+			},
+			"response": []
+		},
+		{
+			"name": "/followers/follow/1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "23123"
+					}
+				],
+				"url": "http://127.0.0.1:8090/followers/follow/1"
+			},
+			"response": []
+		},
+		{
+			"name": "/followers/follow/1",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "123123"
+					}
+				],
+				"url": "http://127.0.0.1:8090/followers/follow/1"
+			},
+			"response": []
+		},
+		{
+			"name": "/favorites?limit=20&offset=0",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "123123"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8090/favorites?limit=20&offset=0",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8090",
+					"path": [
+						"favorites"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "20"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/favorites/1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "3d2d4d184f992c2bf51281c7adb145b0"
+					}
+				],
+				"url": "http://127.0.0.1:8090/favorites/34"
+			},
+			"response": []
+		},
+		{
+			"name": "/favorites/1",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "123123"
+					}
+				],
+				"url": "http://127.0.0.1:8090/favorites/1"
+			},
+			"response": []
+		},
+		{
+			"name": "/auctions/watch?product=1",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "d9c66063534c22fb506173b04862b223"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8090/auctions/watch?product=87",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8090",
+					"path": [
+						"auctions",
+						"watch"
+					],
+					"query": [
+						{
+							"key": "product",
+							"value": "87"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/auctions?product=1",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "1234"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8090/auctions?product=34",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8090",
+					"path": [
+						"auctions"
+					],
+					"query": [
+						{
+							"key": "product",
+							"value": "34"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/auctions?product=1",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "sessionid",
+						"value": "1234"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:8090/auctions?product=34",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8090",
+					"path": [
+						"auctions"
+					],
+					"query": [
+						{
+							"key": "product",
+							"value": "34"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
