@@ -31,15 +31,21 @@ func (r *ProductRepo) GetProductById(id int) (*models.ProductRepresentation, err
 }
 
 func (r *ProductRepo) GetProducts(sellingUserId int, limit int, offset int) ([]*models.ProductRepresentation, error) {
-	var arg1, arg2, arg3 any
-	var userIdNumber, limitNumber, offsetNumber = Number(sellingUserId), Number(limit), Number(offset)
-	piles := NewPairOfRelatedPiles([]any{arg1, arg2, arg3}, []optional{userIdNumber, limitNumber, offsetNumber})
-	piles.MakeAssociation()
+	templateQuery := "SELECT id, namex, description, imageurl, userx FROM products %s ORDER BY namex DESC %s %s"
 
-	selectQuery := customGetProductsQuery(sellingUserId, limit, offset)
-	// Query ignores extra args
-	rows, err := r.db.Query(selectQuery, piles.args[0], piles.args[1], piles.args[2])
-	if err != nil {
+	valueAndQueryArray := NewArrayOfValuesAndQueries(valueWithQuery{Number(sellingUserId), " WHERE userx = %v "},
+		valueWithQuery{Number(limit), " LIMIT %v "}, valueWithQuery{Number(offset), " OFFSET %v "})
+	valuesQueries := ArrayOfValuesAndQueries{vq: *valueAndQueryArray}
+	valuesQueries.filterNonSense()
+	// I was going to be a good boy and use placeholders for the SQL queries, but im in a hurry and their restrictions
+	// were becoming annoying... SQL jedis can't reach the power the dark side provides
+	// (I don't fear SQL injection in this context/layer, but I know this code is much more vulnerable)
+	selectQuery := fmt.Sprintf(templateQuery, valuesQueries.vq[0].query, valuesQueries.vq[1].query, valuesQueries.vq[2].query)
+	// This is done in 2 steps, because they are nested
+	query, e := insertValues(selectQuery, valuesQueries.vq[0].value, valuesQueries.vq[1].value, valuesQueries.vq[2].value)
+
+	rows, err := r.db.Query(query)
+	if err != nil || e != nil {
 		return nil, SomethingWentWrong
 	}
 	defer rows.Close()
@@ -74,7 +80,7 @@ func (r *ProductRepo) SaveProduct(userId int, product *models.ProductForm) (int,
 	}
 	return insertId, nil
 }
-func (r *ProductRepo) DeleteProduct(id int, deletingUserId int) error { //TODO remember to get this user id from the token
+func (r *ProductRepo) DeleteProduct(id int, deletingUserId int) error {
 	deleteQuery := `DELETE FROM products WHERE id = $1 AND userx = $2`
 	result, err1 := r.db.Exec(deleteQuery, id, deletingUserId)
 	if err1 != nil {
@@ -88,60 +94,4 @@ func (r *ProductRepo) DeleteProduct(id int, deletingUserId int) error { //TODO r
 		return NotFound
 	}
 	return nil
-}
-
-func customGetProductsQuery(sellingUserId int, limit int, offset int) string {
-	var stringUserId, stringLimit, stringOffset string // if a string is not initialized, its value is ""
-	query := "SELECT id, namex, description, imageurl, userx FROM products %sORDER BY namex%s%s"
-	if sellingUserId >= 0 {
-		stringUserId = "WHERE userx = $1 "
-	}
-	if limit >= 0 {
-		stringLimit = " LIMIT $2"
-	}
-	if offset >= 0 {
-		stringOffset = " OFFSET $3"
-	}
-	customQuery := fmt.Sprintf(query, stringUserId, stringLimit, stringOffset)
-	// inserts the strings into the string query if the related value "makes sense"
-	return customQuery
-}
-
-// the idea is to assign to the arguments the values in the slice of values (if they make sense, contextually) in order
-type RelatedPiles struct {
-	args   []any
-	values []optional
-	// All of this so i dont have to code the conditionals 1 by 1
-	// The cleaner way would be to pair this with the string parts of the query in a slightly more complex struct... This should work for now
-}
-
-func NewPairOfRelatedPiles(args []any, values []optional) *RelatedPiles {
-	return &RelatedPiles{
-		args:   args,
-		values: values,
-	}
-}
-
-type optional interface {
-	IsItThere() bool
-}
-
-func (piles *RelatedPiles) MakeAssociation() {
-	var i int // = 0
-	for _, v := range piles.values {
-		if v.IsItThere() {
-			piles.args[i] = v
-			i++
-		}
-	}
-}
-
-// Go doesnt let me implement an interface for int, maybe because its a built-in type
-type Number int
-
-func (n Number) IsItThere() bool {
-	if n >= 0 {
-		return true
-	}
-	return false
 }

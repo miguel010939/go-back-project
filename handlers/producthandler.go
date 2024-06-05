@@ -70,6 +70,7 @@ func (ph *ProductHandler) GetListProducts(w http.ResponseWriter, r *http.Request
 
 	products, err := ph.repo.GetProducts(user, limit, offset)
 	if err != nil {
+		errorDispatch(w, r, err)
 		return
 	} // TODO maybe later simplify this so that the repo method itself returns an array of values, not pointers
 	var productArray []models.ProductRepresentation

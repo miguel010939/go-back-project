@@ -1,5 +1,6 @@
 package handlers
 
+/*
 import (
 	"database/sql"
 	"encoding/json"
@@ -140,3 +141,4 @@ func (fah *FavoriteHandler) DeleteFavorite(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusNoContent)
 	logging.Log(r, 204)
 }
+*/

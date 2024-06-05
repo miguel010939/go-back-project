@@ -12,7 +12,7 @@ func UralFactories(db *sql.DB, nUsers int, nProducts int, nFavorites int, nFollo
 	}
 	userFactory(db, nUsers)
 	productFactory(db, nUsers, nProducts)
-	favoriteFactory(db, nUsers, nProducts, nFavorites)
+	//favoriteFactory(db, nUsers, nProducts, nFavorites)
 	followerFactory(db, nUsers, nFollowers)
 }
 
@@ -36,16 +36,19 @@ func productFactory(db *sql.DB, nUsers int, nProducts int) {
 		productRepo.SaveProduct(user, product)
 	}
 }
-func favoriteFactory(db *sql.DB, nUsers int, nProducts int, nFavorites int) {
-	favoriteRepo := repositories.NewFavoriteRepo(db)
-	for i := 0; i < nFavorites; i++ {
-		err := favoriteRepo.SaveFavorite(rand.Intn(nUsers)+1, rand.Intn(nProducts)+1)
-		// control for 409, specially
-		if err != nil {
-			i--
+
+/*
+	func favoriteFactory(db *sql.DB, nUsers int, nProducts int, nFavorites int) {
+		favoriteRepo := repositories.NewFavoriteRepo(db)
+		for i := 0; i < nFavorites; i++ {
+			err := favoriteRepo.SaveFavorite(rand.Intn(nUsers)+1, rand.Intn(nProducts)+1)
+			// control for 409, specially
+			if err != nil {
+				i--
+			}
 		}
 	}
-}
+*/
 func followerFactory(db *sql.DB, nUsers int, nFollowers int) {
 	followerRepo := repositories.NewFollowerRepo(db)
 	for i := 0; i < nFollowers; i++ {

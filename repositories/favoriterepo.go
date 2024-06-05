@@ -1,5 +1,6 @@
 package repositories
 
+/*
 import (
 	"database/sql"
 	"errors"
@@ -52,7 +53,7 @@ func (r *FavoriteRepo) SaveFavorite(userId int, productId int) error {
 	if favorite {
 		return Conflict
 	}
-	insertQuery := `INSERT INTO favorites (userx, product) 
+	insertQuery := `INSERT INTO favorites (userx, product)
 					VALUES ($1, $2)`
 	_, err := r.db.Exec(insertQuery, userId, productId)
 	if err != nil {
@@ -61,7 +62,7 @@ func (r *FavoriteRepo) SaveFavorite(userId int, productId int) error {
 	return nil
 }
 func (r *FavoriteRepo) DeleteFavorite(userId int, productId int) error {
-	deleteQuery := `DELETE FROM favorites 
+	deleteQuery := `DELETE FROM favorites
 					WHERE userx=$1 AND product=$2`
 	result, err1 := r.db.Exec(deleteQuery, userId, productId)
 	if err1 != nil {
@@ -102,8 +103,8 @@ func (r *FavoriteRepo) isFavorite(userId int, productId int) (bool, error) {
 
 func customGetFavoritesQuery(limit int, offset int) string {
 	var stringLimit, stringOffset string // if a string is not initialized, its value is ""
-	query := `SELECT p.id, p.namex, p.description, p.imageurl, p.userx 
-				FROM favorites f, products p 
+	query := `SELECT p.id, p.namex, p.description, p.imageurl, p.userx
+				FROM favorites f, products p
             		WHERE f.userx=$1 AND f.product=p.id
             		ORDER BY p.namex DESC%s%s`
 	if limit >= 0 {
@@ -115,3 +116,4 @@ func customGetFavoritesQuery(limit int, offset int) string {
 	customQuery := fmt.Sprintf(query, stringLimit, stringOffset)
 	return customQuery
 }
+*/

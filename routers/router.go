@@ -33,10 +33,10 @@ func Routes(r *http.ServeMux, db *sql.DB) {
 	r.HandleFunc("POST /followers/follow/", foh.FollowUser)
 	r.HandleFunc("DELETE /followers/follow/", foh.UnfollowUser)
 
-	fah := handlers.NewFavoriteHandler(db)
+	/*fah := handlers.NewFavoriteHandler(db)
 	r.HandleFunc("GET /favorites", fah.GetFavorites)
 	r.HandleFunc("POST /favorites/", fah.SaveFavorite)
-	r.HandleFunc("DELETE /favorites/", fah.DeleteFavorite)
+	r.HandleFunc("DELETE /favorites/", fah.DeleteFavorite)*/
 
 	// TODO maybe its better to sub my toy path param parser with the official recent addition to the SL
 	r.Handle("/{$}", http.FileServer(http.Dir("./static/")))
