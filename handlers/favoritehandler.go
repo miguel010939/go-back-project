@@ -1,6 +1,5 @@
 package handlers
 
-/*
 import (
 	"database/sql"
 	"encoding/json"
@@ -23,7 +22,6 @@ func NewFavoriteHandler(db *sql.DB) *FavoriteHandler {
 	}
 }
 
-// TODO DEBUG OPTIONAL PARAMS!! this can break limit, eg, is missing
 func (fah *FavoriteHandler) GetFavorites(w http.ResponseWriter, r *http.Request) {
 	// takes header "sessionid" token & query params limit & offset, method Get
 	limitStr := r.URL.Query().Get("limit")
@@ -141,4 +139,3 @@ func (fah *FavoriteHandler) DeleteFavorite(w http.ResponseWriter, r *http.Reques
 	w.WriteHeader(http.StatusNoContent)
 	logging.Log(r, 204)
 }
-*/

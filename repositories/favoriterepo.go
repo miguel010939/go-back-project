@@ -1,6 +1,5 @@
 package repositories
 
-/*
 import (
 	"database/sql"
 	"errors"
@@ -16,14 +15,25 @@ func NewFavoriteRepo(db *sql.DB) *FavoriteRepo {
 	return &FavoriteRepo{db}
 }
 func (r *FavoriteRepo) GetFavorites(userId int, limit int, offset int) ([]*models.ProductRepresentation, error) {
-	var arg1, arg2 any
-	var limitNumber, offsetNumber = Number(limit), Number(offset)
-	piles := NewPairOfRelatedPiles([]any{arg1, arg2}, []optional{limitNumber, offsetNumber})
-	piles.MakeAssociation()
 
-	query := customGetFavoritesQuery(limit, offset)
-	rows, err1 := r.db.Query(query, userId, piles.args[0], piles.args[1])
-	if err1 != nil {
+	templateQuery := `SELECT p.id, p.namex, p.description, p.imageurl, p.userx
+					FROM favorites f, products p
+            		WHERE f.userx=$1 AND f.product=p.id
+            		ORDER BY p.namex DESC %s %s `
+
+	valueAndQueryArray := NewArrayOfValuesAndQueries(valueWithQuery{Number(limit), " LIMIT %v "},
+		valueWithQuery{Number(offset), " OFFSET %v "})
+	valuesQueries := ArrayOfValuesAndQueries{vq: *valueAndQueryArray}
+	valuesQueries.filterNonSense()
+	// I was going to be a good boy and use placeholders for the SQL queries, but im in a hurry and their restrictions
+	// were becoming annoying... SQL jedis can't reach the power the dark side provides
+	// (I don't fear SQL injection in this context/layer, but I know this code is much more vulnerable)
+	selectQuery := fmt.Sprintf(templateQuery, valuesQueries.vq[0].query, valuesQueries.vq[1].query)
+	// This is done in 2 steps, because they are nested
+	query, e := insertValues(selectQuery, valuesQueries.vq[0].value, valuesQueries.vq[1].value)
+
+	rows, err1 := r.db.Query(query, userId)
+	if err1 != nil || e != nil {
 		return nil, SomethingWentWrong
 	}
 	defer rows.Close()
@@ -100,20 +110,3 @@ func (r *FavoriteRepo) isFavorite(userId int, productId int) (bool, error) {
 	}
 	return true, nil
 }
-
-func customGetFavoritesQuery(limit int, offset int) string {
-	var stringLimit, stringOffset string // if a string is not initialized, its value is ""
-	query := `SELECT p.id, p.namex, p.description, p.imageurl, p.userx
-				FROM favorites f, products p
-            		WHERE f.userx=$1 AND f.product=p.id
-            		ORDER BY p.namex DESC%s%s`
-	if limit >= 0 {
-		stringLimit = " LIMIT $2"
-	}
-	if offset >= 0 {
-		stringOffset = " OFFSET $3"
-	}
-	customQuery := fmt.Sprintf(query, stringLimit, stringOffset)
-	return customQuery
-}
-*/
