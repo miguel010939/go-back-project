@@ -6,6 +6,7 @@ import (
 	"main.go/config"
 	db2 "main.go/db"
 	"main.go/factories"
+	"main.go/handlers"
 	"main.go/routers"
 	"net/http"
 )
@@ -26,8 +27,10 @@ func main() {
 	r := http.NewServeMux()
 	routers.Routes(r, db)
 
+	corsHandler := handlers.CorsMiddleware(r)
+
 	fmt.Println("Server working on port 8090...")
-	err2 := http.ListenAndServe(":8090", r)
+	err2 := http.ListenAndServe(":8090", corsHandler)
 	if err2 != nil {
 		return
 	}
