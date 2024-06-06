@@ -32,7 +32,6 @@ func Routes(r *http.ServeMux, db *sql.DB) {
 	r.HandleFunc("GET /followers/follow", foh.GetUsersImFollowing)
 	r.HandleFunc("POST /followers/follow/", foh.FollowUser)
 	r.HandleFunc("DELETE /followers/follow/", foh.UnfollowUser)
-	//r.HandleFunc("OPTIONS followers/follow", foh.OptionsCors)
 
 	fah := handlers.NewFavoriteHandler(db)
 	r.HandleFunc("GET /favorites", fah.GetFavorites)

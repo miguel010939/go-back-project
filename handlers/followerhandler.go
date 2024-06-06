@@ -20,7 +20,6 @@ func NewFollowerHandler(db *sql.DB) *FollowerHandler {
 	}
 }
 func (foh *FollowerHandler) GetUsersImFollowing(w http.ResponseWriter, r *http.Request) {
-	cors(w)
 	// takes header "sessionid" token , method Get
 	// user
 	token := r.Header.Get("sessionid")
