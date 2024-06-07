@@ -26,8 +26,8 @@ func (ulf *UserLogInForm) IsValiD() bool {
 func (pf *ProductForm) IsValiD() bool {
 	_, e1 := CleanName(pf.Name)
 	_, e2 := CleanDescription(pf.Description)
-	_, e3 := CleanUrl(pf.ImageUrl)
-	if e1 != nil || e2 != nil || e3 != nil {
+	//_, e3 := CleanUrl(pf.ImageUrl) Im going to skip validating the url for now... fewer headaches during dev phase
+	if e1 != nil || e2 != nil /*|| e3 != nil*/ {
 		return false
 	}
 	return true

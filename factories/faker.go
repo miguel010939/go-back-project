@@ -81,6 +81,9 @@ var (
 	}
 	passwords = []string{"12", "123", "1234", "12345", "123456", "contrasenha", "password", "nomoreideas"}
 
-	images = []string{"www.something1.com", "www.something2.com", "www.something3.com", "www.something4.com",
-		"www.something5.com", "www.something6.com", "www.something7.com", "www.something8.com", "www.something9.com"}
+	images = []string{"https://upload.wikimedia.org/wikipedia/commons/6/66/Openlogo-debianV2.svg",
+		"https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo-ubuntu_cof-orange-hex.svg",
+		"https://upload.wikimedia.org/wikipedia/commons/3/3f/Logo_Linux_Mint.png",
+		"https://upload.wikimedia.org/wikipedia/commons/3/3f/Fedora_logo.svg",
+		"https://upload.wikimedia.org/wikipedia/commons/4/46/Pop%21_OS_Icon.svg"}
 )
