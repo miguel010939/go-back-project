@@ -8,6 +8,18 @@ const (
 	AuctionCapacity = 200
 )
 
+type AuctionList struct {
+	Products []int `json:"products"`
+}
+
+func MakeAuctionList(auh *AuctionHandler) *AuctionList {
+	var products []int
+	for _, p := range auh.auctions {
+		products = append(products, p.ProdId)
+	}
+	return &AuctionList{Products: products}
+}
+
 type Auction struct {
 	ProdId         int                // Product id
 	Max            float32            // Current price to beat

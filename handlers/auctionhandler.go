@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"encoding/json"
 	"main.go/logging"
 	"main.go/repositories"
 	"net/http"
@@ -28,6 +29,20 @@ func NewAuctionHandler(db *sql.DB) *AuctionHandler {
 		prod:     *repositories.NewProductRepo(db),
 		auctions: make(map[int]*Auction), // maps the product id to its associated auction
 	}
+}
+func (auh *AuctionHandler) GetAuctions(w http.ResponseWriter, r *http.Request) {
+	auctionList := MakeAuctionList(auh)
+	auctionJsonData, e := json.Marshal(auctionList)
+	if e != nil {
+		errorDispatch(w, r, repositories.SomethingWentWrong)
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_, e2 := w.Write(auctionJsonData)
+	if e2 != nil {
+		errorDispatch(w, r, repositories.SomethingWentWrong)
+		return
+	}
+	logging.Log(r, 200)
 }
 
 func (auh *AuctionHandler) PostAuction(w http.ResponseWriter, r *http.Request) {

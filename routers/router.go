@@ -21,6 +21,7 @@ func Routes(r *http.ServeMux, db *sql.DB) {
 
 	auh := handlers.NewAuctionHandler(db)
 	r.HandleFunc("GET /auctions/watch", auh.ObserveAuction)
+	r.HandleFunc("GET /auctions", auh.GetAuctions)
 	r.HandleFunc("POST /auctions", auh.PostAuction)
 	r.HandleFunc("DELETE /auctions", auh.DeleteAuction)
 
