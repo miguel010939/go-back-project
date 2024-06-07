@@ -1,7 +1,8 @@
 # go-back-project
 
-#### [Memoria: *Work in progress*](memoria/memoria.md)
+#### [Memoria: ](memoria/memoria.md)
 #### [Pequeña referencia: *Work in progress*](HEEDME.md)
+#### [Frontend: *Not fully functional*](https://github.com/miguel010939/react-front)
 
 # Instalar Go
 
