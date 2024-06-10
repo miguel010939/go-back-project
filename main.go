@@ -9,10 +9,19 @@ import (
 	"main.go/handlers"
 	"main.go/routers"
 	"net/http"
+	"os"
 )
 
 func main() {
-	db, err1 := db2.NewDBConnection(config.DefaultConnStr)
+	dbHost := os.Getenv("DB_HOST")
+	dbPort := os.Getenv("DB_PORT")
+	dbUser := os.Getenv("DB_USER")
+	dbPassword := os.Getenv("DB_PASSWORD")
+	dbName := os.Getenv("DB_NAME")
+
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPassword, dbName)
+
+	db, err1 := db2.NewDBConnection(connStr)
 	if err1 != nil {
 		if config.EnforceSuccessfulDBConnection {
 			panic(err1)
